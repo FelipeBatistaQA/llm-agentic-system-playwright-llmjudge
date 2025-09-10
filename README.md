@@ -70,7 +70,7 @@ Built on Playwright's robust testing infrastructure:
 ### OpenAI Dashboard Integration
 Comprehensive usage monitoring and analytics:
 
-![OpenAI Usage Dashboard](https://github.com/user-attachments/assets/f1e2d3c4-b5a6-7c8d-9e0f-1a2b3c4d5e6f)
+![OpenAI Usage Dashboard](https://github.com/user-attachments/assets/fccc2a56-2ba2-46a7-ac0b-51dc62b15f85)
 
 **Features**:
 - **Token Usage Tracking**: Detailed input/output token consumption
