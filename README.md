@@ -72,6 +72,8 @@ Comprehensive usage monitoring and analytics:
 
 ![OpenAI Usage Dashboard](https://github.com/user-attachments/assets/fccc2a56-2ba2-46a7-ac0b-51dc62b15f85)
 
+![OpenAI Usage Dashboard](https://github.com/user-attachments/assets/9b67360a-9457-44ea-9dbf-6b13c1238a8a)
+
 **Features**:
 - **Token Usage Tracking**: Detailed input/output token consumption
 - **Model Performance**: Response times and success rates
