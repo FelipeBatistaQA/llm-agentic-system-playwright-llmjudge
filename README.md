@@ -252,7 +252,8 @@ test.describe('AI-Enhanced Features', () => {
 1. **Setup Development Environment**
    ```bash
    git clone <repository>
-   cd LLM-JUDGE
+   cd llm-agentic-system-playwright-llmjudge
+
    npm install
    cp .env.example .env  # Configure OPENAI_API_KEY in .env file
    ```
@@ -267,11 +268,3 @@ test.describe('AI-Enhanced Features', () => {
    - Each module has detailed README files
    - Follow existing patterns for new features
    - Ensure comprehensive logging integration
-
-## License
-
-MIT License - See LICENSE file for details.
-
----
-
-**LLM-JUDGE** - Where AI meets rigorous testing standards. Built for the future of AI-powered applications.
