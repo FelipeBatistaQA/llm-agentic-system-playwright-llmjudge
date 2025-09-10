@@ -65,7 +65,7 @@ Built on Playwright's robust testing infrastructure:
 - **Fixtures System**: Auto-configuration and cleanup
 - **Parallel Execution**: Scalable test execution
 
-![Segregated Log Attachments](https://github.com/user-attachments/assets/8b5c4c5d-2f1a-4b6e-8c45-3d2e1a7f9b0c)
+![Segregated Log Attachments](https://github.com/user-attachments/assets/f3c911e5-b3ca-4719-bf6a-0af7105c6d9b)
 
 ### OpenAI Dashboard Integration
 Comprehensive usage monitoring and analytics:
