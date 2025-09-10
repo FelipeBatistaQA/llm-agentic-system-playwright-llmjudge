@@ -1,0 +1,1 @@
+export { SemanticAnalyzer } from './semantic-analyzer';

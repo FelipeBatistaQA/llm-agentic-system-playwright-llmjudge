@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2020",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*.ts", "tests/playwright/**/*.ts", "tests/*.spec.ts", "agentic-system/agents/llm-judge/**/*.ts", "agentic-system/agents/llm-judge/judge-agent.ts", "agentic-system/agents/llm-judge/types.ts", "semantic-analizer/semantic-analyzer.ts"],
+  "exclude": ["node_modules", "dist"]
+}
+
+
