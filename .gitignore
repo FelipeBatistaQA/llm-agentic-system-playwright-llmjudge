@@ -8,3 +8,4 @@ node_modules/
 .env
 
 logsystem/logs/
+/chart-generator/llm_judge_dashboard.png

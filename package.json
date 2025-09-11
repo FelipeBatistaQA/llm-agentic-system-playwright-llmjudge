@@ -9,12 +9,16 @@
     "start": "node dist/main.js",
     "start:dev": "ts-node-dev --respawn --transpile-only src/main.ts",
     "test": "playwright test",
-    "test:pw": "playwright test",
-    "test:pw:headed": "playwright test --headed"
+    "dashboard": "ts-node chart-generator/index.ts generate logSystem/logs/judge_results.csv"
+
   },
   "dependencies": {
     "@openai/agents": "^0.0.17",
     "@xenova/transformers": "^2.15.0",
+    "canvas": "^3.2.0",
+    "chart.js": "^4.5.0",
+    "commander": "^14.0.0",
+    "csv-parser": "^3.2.0",
     "dotenv": "^16.4.5",
     "openai": "^4.52.0",
     "reflect-metadata": "^0.2.2",
@@ -23,6 +27,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2",
+    "@types/node": "^24.3.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5"
   }
