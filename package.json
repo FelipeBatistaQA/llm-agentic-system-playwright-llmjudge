@@ -9,8 +9,7 @@
     "start": "node dist/main.js",
     "start:dev": "ts-node-dev --respawn --transpile-only src/main.ts",
     "test": "playwright test",
-    "dashboard": "ts-node chart-generator/index.ts generate logSystem/logs/judge_results.csv"
-
+    "reports": "ts-node chart-generator/index.ts generate logSystem/logs/judge_results.csv"
   },
   "dependencies": {
     "@openai/agents": "^0.0.17",
@@ -21,6 +20,7 @@
     "csv-parser": "^3.2.0",
     "dotenv": "^16.4.5",
     "openai": "^4.52.0",
+    "plotly.js-dist-min": "^3.1.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "zod": "^3.25.76"

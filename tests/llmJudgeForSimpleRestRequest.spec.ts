@@ -70,14 +70,14 @@ test.describe('Geography Questions via OpenAI REST API', () => {
 
       const judgeResult = await judge.judgeRelevance(testData.question, chatgptAnswer);
 
-      expect(chatgptAnswer).toBeTruthy();
-      expect(chatgptAnswer.toLowerCase()).toContain(testData.expectedAnswer.toLowerCase());
+      expect.soft(chatgptAnswer).toBeTruthy();
+      expect.soft(chatgptAnswer.toLowerCase()).toContain(testData.expectedAnswer.toLowerCase());
       
-      expect(judgeResult.ok).toBe(true);
-      expect(judgeResult.rating).toBeGreaterThanOrEqual(8); // 8+ is excellent
-      expect(judgeResult.rating).toBeLessThanOrEqual(10);
-      expect(judgeResult.explanation).toBeTruthy(); 
-      expect(judgeResult.reason).toBeTruthy(); 
+      expect.soft(judgeResult.ok).toBe(true);
+      expect.soft(judgeResult.rating).toBeGreaterThanOrEqual(8); // 8+ is excellent
+      expect.soft(judgeResult.rating).toBeLessThanOrEqual(10);
+      expect.soft(judgeResult.explanation).toBeTruthy(); 
+      expect.soft(judgeResult.reason).toBeTruthy(); 
     });
   });
 });

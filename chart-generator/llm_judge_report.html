@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Judge System - Test Results</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body { background-color: #1a1a1a; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 2.5em; margin: 0; color: #ffffff; font-weight: bold; }
+        .stats-container { display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; flex-wrap: wrap; }
+        .stat-box { background: linear-gradient(135deg, var(--bg-color), var(--bg-color-dark)); padding: 20px; border-radius: 12px; text-align: center; min-width: 150px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); }
+        .stat-value { font-size: 2em; font-weight: bold; margin-bottom: 5px; }
+        .stat-label { font-size: 0.9em; opacity: 0.9; }
+        .chart-container { margin-bottom: 40px; background: #262626; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .chart-title { text-align: center; font-size: 1.4em; margin-bottom: 20px; color: #ffffff; font-weight: bold; }
+        .footer { text-align: center; color: #9ca3af; font-size: 0.9em; margin-top: 30px; }
+        .error-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.85em; }
+        .error-table th, .error-table td { padding: 8px; text-align: left; border-bottom: 1px solid #374151; vertical-align: top; }
+        .error-table th { background: #1f2937; color: #f9fafb; font-weight: bold; }
+        .error-table td { background: #111827; }
+        .error-message { max-width: 200px; word-wrap: break-word; font-size: 0.8em; }
+        .error-line { color: #fbbf24; font-weight: bold; }
+        .error-test { color: #60a5fa; font-weight: bold; }
+        .clickable { cursor: pointer; transition: transform 0.2s ease; }
+        .clickable:hover { transform: scale(1.05); }
+        .error-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; z-index: 1000; overflow-y: auto; padding: 20px; }
+        .error-page.active { display: block; }
+        .back-button { background: #374151; color: #ffffff; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 1em; margin-bottom: 20px; }
+        .back-button:hover { background: #4b5563; }
+    </style>
+</head>
+<body>
+    <div class="header"><h1>LLM Judge System - Test Results</h1></div>
+    <div class="stats-container">
+        <div class="stat-box" style="--bg-color: #2563eb; --bg-color-dark: #1d4ed8;"><div class="stat-value">26</div><div class="stat-label">Total Tests</div></div>
+        <div class="stat-box" style="--bg-color: #10b981; --bg-color-dark: #059669;"><div class="stat-value">80.8%</div><div class="stat-label">Success Rate</div></div>
+        <div class="stat-box" style="--bg-color: #f59e0b; --bg-color-dark: #d97706;"><div class="stat-value">9.3</div><div class="stat-label">Average Rating</div></div>
+        <div class="stat-box" style="--bg-color: #8b5cf6; --bg-color-dark: #7c3aed;"><div class="stat-value">9-10</div><div class="stat-label">Range</div></div>
+        <div class="stat-box clickable" style="--bg-color: #ef4444; --bg-color-dark: #dc2626;" onclick="showErrorPage()"><div class="stat-value">5</div><div class="stat-label">Errors</div></div>
+    </div>
+    <div class="chart-container"><div class="chart-title">Rating Distribution</div><div id="distributionChart"></div></div>
+    <div class="chart-container"><div class="chart-title">PASS/FAIL Ratio</div><div id="statusChart"></div></div>
+    <div class="chart-container"><div class="chart-title">Recent Performance Trend</div><div id="trendChart"></div></div>
+    <div class="chart-container"><div class="chart-title">📈 Criteria Trends</div><div id="criteriaTrendChart"></div></div>
+    <div class="chart-container"><div class="chart-title">Criteria Average Scores</div><div id="criteriaChart"></div></div>
+    <div class="chart-container"><div class="chart-title">Criteria Breakdown</div><div id="criteriaBarChart"></div></div>
+    <div class="chart-container"><div class="chart-title">📊 Criteria Distribution (Min/Avg/Max)</div><div id="criteriaDistChart"></div></div>
+    <div class="footer">Generated on: 9/12/2025, 4:51:11 PM | Total Records: 26</div>
+    
+    <!-- Página separada de erros -->
+    <div id="errorPage" class="error-page"><button class="back-button" onclick="hideErrorPage()">← Back to Dashboard</button><div class="header"><h1>❌ Error Analysis</h1><p style="color: #9ca3af;">Found 5 errors (19.2% error rate)</p></div><div class="chart-container" style="border: 2px solid #ef4444;"><div class="chart-title">Error Types Distribution</div><div id="errorChartPage"></div></div><div class="chart-container"><div class="chart-title">Detailed Error Log</div><table class="error-table"><thead><tr><th>Line</th><th>Time</th><th>Test Name</th><th>Prompt</th><th>Full Error Message</th></tr></thead><tbody><tr><td class="error-line">14</td><td>12/09/2025, 15:46:22</td><td class="error-test">geography-question-schema-error</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Zod field at `#/definitions/output/properties/testedItem/properties/question` uses `.optional()` without `.nullable()` which is not supported by the API. See: https://platform.openai.com/docs/guides/structured-outputs?api-mode=responses#all-fields-must-be-required</td></tr><tr><td class="error-line">15</td><td>12/09/2025, 15:46:22</td><td class="error-test">geography-question-api-error</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Request failed with status 429 - Rate limit exceeded</td></tr><tr><td class="error-line">24</td><td>12/09/2025, 15:46:30</td><td class="error-test">geography-question-invalid-output</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Invalid output type</td></tr><tr><td class="error-line">25</td><td>12/09/2025, 15:46:35</td><td class="error-test">geography-question-timeout-error</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Request timeout after 30 seconds</td></tr><tr><td class="error-line">26</td><td>12/09/2025, 15:46:40</td><td class="error-test">geography-question-parsing-error</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Failed to parse JSON response from judge agent</td></tr></tbody></table></div></div>
+    <script>
+        const darkLayout = { paper_bgcolor: '#262626', plot_bgcolor: '#1a1a1a', font: { color: '#ffffff' }, xaxis: { gridcolor: '#374151', zerolinecolor: '#374151', color: '#d1d5db' }, yaxis: { gridcolor: '#374151', zerolinecolor: '#374151', color: '#d1d5db' } };
+        const config = { responsive: true, displayModeBar: true, modeBarButtonsToRemove: ['pan2d', 'select2d', 'lasso2d', 'autoScale2d'], displaylogo: false };
+        
+        Plotly.newPlot('distributionChart', [{x: ['0','1','2','3','4','5','6','7','8','9','10'], y: [0,0,0,0,0,0,0,0,0,15,6], type: 'bar', marker: {color: '#10b981', line: {color: '#059669', width: 2}}, hovertemplate: 'Rating: %{x}<br>Count: %{y}<extra></extra>'}], {...darkLayout, xaxis: {...darkLayout.xaxis, title: 'Rating'}, yaxis: {...darkLayout.yaxis, title: 'Count'}, margin: {l: 60, r: 40, t: 40, b: 60}}, config);
+        
+        Plotly.newPlot('statusChart', [{labels: ["PASS"], values: [21], type: 'pie', hole: 0.4, marker: {colors: ['#10b981', '#ef4444'], line: {color: '#ffffff', width: 2}}, textfont: {color: '#ffffff', size: 14}, hovertemplate: '%{label}: %{value}<br>%{percent}<extra></extra>'}], {...darkLayout, margin: {l: 40, r: 40, t: 40, b: 40}, showlegend: true, legend: {font: {color: '#d1d5db'}, orientation: 'h', x: 0.5, xanchor: 'center', y: -0.1}}, config);
+        
+        Plotly.newPlot('trendChart', [{x: ["Test 1","Test 2","Test 3","Test 4","Test 5","Test 6","Test 7","Test 8","Test 9","Test 10","Test 11","Test 12","Test 13","Test 14","Test 15","Test 16","Test 17","Test 18","Test 19","Test 20","Test 21"], y: [10,10,9,9,10,10,9,9,10,10,9,9,9,9,9,9,9,9,9,9,9], customdata: ["geography-question-1-capital-of-japan","geography-question-1-capital-of-japan","geography-question-4-capital-of-australia","geography-question-4-capital-of-australia","geography-question-2-largest-country-by-area","geography-question-2-largest-country-by-area","geography-question-5-mount-everest-location","geography-question-5-mount-everest-location","geography-question-8-capital-of-brazil","geography-question-8-capital-of-brazil","geography-question-7-largest-ocean","geography-question-7-largest-ocean","geography-question-3-longest-river","geography-question-3-longest-river","geography-question-9-largest-desert","geography-question-9-largest-desert","geography-question-6-smallest-country","geography-question-6-smallest-country","geography-question-10-deepest-lake","geography-question-10-deepest-lake","should-generate-a-valid-2-question-geography-sequence"], type: 'scatter', mode: 'lines+markers', line: {color: '#f59e0b', width: 3}, marker: {color: '#f59e0b', size: 8, line: {color: '#d97706', width: 2}}, hovertemplate: '<b>%{x}</b><br><span style="color:#f59e0b">🎯 Rating: %{y}/10</span><br><span style="color:#60a5fa">📋 %{customdata}</span><extra></extra>', hoverlabel: {bgcolor: '#1f2937', bordercolor: '#f59e0b', font: {color: '#ffffff', size: 12}}}], {...darkLayout, xaxis: {...darkLayout.xaxis, title: 'Test Sequence (Last 50)'}, yaxis: {...darkLayout.yaxis, title: 'Rating', range: [0, 10]}, margin: {l: 60, r: 40, t: 40, b: 80}}, config);
+        
+        
+        Plotly.newPlot('criteriaChart', [{
+            type: 'scatterpolar',
+            r: [9.5, 10.0, 9.9, 8.6, 6.8, 9.3],
+            theta: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Creativity', 'Level of Detail'],
+            fill: 'toself',
+            fillcolor: 'rgba(16, 185, 129, 0.2)',
+            line: { color: '#10b981', width: 3 },
+            marker: { color: '#10b981', size: 8, line: { color: '#059669', width: 2 } },
+            hovertemplate: '%{theta}: %{r}<extra></extra>'
+        }], {
+            ...darkLayout,
+            polar: {
+                radialaxis: {
+                    visible: true,
+                    range: [0, 10],
+                    gridcolor: '#374151',
+                    tickcolor: '#d1d5db'
+                },
+                angularaxis: {
+                    tickcolor: '#d1d5db',
+                    gridcolor: '#374151'
+                },
+                bgcolor: 'rgba(0,0,0,0)'
+            },
+            margin: { l: 60, r: 60, t: 40, b: 40 }
+        }, config);
+        
+        
+        Plotly.newPlot('criteriaBarChart', [{
+            x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Creativity', 'Level of Detail'],
+            y: [9.5, 10.0, 9.9, 8.6, 6.8, 9.3],
+            type: 'bar',
+            marker: {color: '#8b5cf6', line: {color: '#7c3aed', width: 2}},
+            hovertemplate: '%{x}: %{y}/10<extra></extra>'
+        }], {
+            ...darkLayout,
+            xaxis: {...darkLayout.xaxis, title: 'Criteria'},
+            yaxis: {...darkLayout.yaxis, title: 'Average Score', range: [0, 10]},
+            margin: {l: 60, r: 40, t: 40, b: 80}
+        }, config);
+        
+        
+        Plotly.newPlot('criteriaDistChart', [
+            {
+                x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Creativity', 'Level of Detail'],
+                y: [9, 10, 9, 8, 5, 9],
+                name: 'Minimum',
+                type: 'bar',
+                marker: {color: '#ef4444'}
+            },
+            {
+                x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Creativity', 'Level of Detail'],
+                y: [9.5, 10.0, 9.9, 8.6, 6.8, 9.3],
+                name: 'Average',
+                type: 'bar',
+                marker: {color: '#10b981'}
+            },
+            {
+                x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Creativity', 'Level of Detail'],
+                y: [10, 10, 10, 10, 8, 10],
+                name: 'Maximum',
+                type: 'bar',
+                marker: {color: '#f59e0b'}
+            }
+        ], {
+            ...darkLayout,
+            xaxis: {...darkLayout.xaxis, title: 'Criteria'},
+            yaxis: {...darkLayout.yaxis, title: 'Score', range: [0, 10]},
+            margin: {l: 60, r: 40, t: 40, b: 80},
+            barmode: 'group'
+        }, config);
+        
+        
+        Plotly.newPlot('criteriaTrendChart', [
+            {
+                x: ["Test 1","Test 2","Test 3","Test 4","Test 5","Test 6","Test 7","Test 8","Test 9","Test 10","Test 11","Test 12","Test 13","Test 14","Test 15","Test 16","Test 17","Test 18","Test 19","Test 20","Test 21"],
+                y: [10,10,10,10,10,10,9,9,10,10,9,9,9,9,10,10,9,9,9,9,9],
+                name: 'Helpfulness',
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {color: '#10b981', width: 2},
+                hovertemplate: 'Helpfulness: %{y}/10<extra></extra>'
+            },
+            {
+                x: ["Test 1","Test 2","Test 3","Test 4","Test 5","Test 6","Test 7","Test 8","Test 9","Test 10","Test 11","Test 12","Test 13","Test 14","Test 15","Test 16","Test 17","Test 18","Test 19","Test 20","Test 21"],
+                y: [10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
+                name: 'Relevance',
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {color: '#f59e0b', width: 2},
+                hovertemplate: 'Relevance: %{y}/10<extra></extra>'
+            },
+            {
+                x: ["Test 1","Test 2","Test 3","Test 4","Test 5","Test 6","Test 7","Test 8","Test 9","Test 10","Test 11","Test 12","Test 13","Test 14","Test 15","Test 16","Test 17","Test 18","Test 19","Test 20","Test 21"],
+                y: [10,10,10,10,10,10,10,10,10,10,10,10,9,9,10,10,10,10,10,10,10],
+                name: 'Accuracy',
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {color: '#8b5cf6', width: 2},
+                hovertemplate: 'Accuracy: %{y}/10<extra></extra>'
+            },
+            {
+                x: ["Test 1","Test 2","Test 3","Test 4","Test 5","Test 6","Test 7","Test 8","Test 9","Test 10","Test 11","Test 12","Test 13","Test 14","Test 15","Test 16","Test 17","Test 18","Test 19","Test 20","Test 21"],
+                y: [9,9,9,9,9,9,8,8,10,10,8,8,8,8,9,9,8,8,8,8,8],
+                name: 'Depth',
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {color: '#ef4444', width: 2},
+                hovertemplate: 'Depth: %{y}/10<extra></extra>'
+            },
+            {
+                x: ["Test 1","Test 2","Test 3","Test 4","Test 5","Test 6","Test 7","Test 8","Test 9","Test 10","Test 11","Test 12","Test 13","Test 14","Test 15","Test 16","Test 17","Test 18","Test 19","Test 20","Test 21"],
+                y: [8,8,8,8,8,8,7,7,8,8,5,5,7,7,6,6,5,5,6,6,7],
+                name: 'Creativity',
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {color: '#06b6d4', width: 2},
+                hovertemplate: 'Creativity: %{y}/10<extra></extra>'
+            },
+            {
+                x: ["Test 1","Test 2","Test 3","Test 4","Test 5","Test 6","Test 7","Test 8","Test 9","Test 10","Test 11","Test 12","Test 13","Test 14","Test 15","Test 16","Test 17","Test 18","Test 19","Test 20","Test 21"],
+                y: [10,10,9,9,10,10,9,9,10,10,9,9,9,9,9,9,9,9,9,9,9],
+                name: 'Level of Detail',
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {color: '#84cc16', width: 2},
+                hovertemplate: 'Level of Detail: %{y}/10<extra></extra>'
+            }
+        ], {
+            ...darkLayout,
+            xaxis: {...darkLayout.xaxis, title: 'Test Sequence'},
+            yaxis: {...darkLayout.yaxis, title: 'Score', range: [0, 10]},
+            margin: {l: 60, r: 40, t: 40, b: 80},
+            legend: {font: {color: '#d1d5db'}, orientation: 'h', x: 0.5, xanchor: 'center', y: -0.2},
+            hovermode: 'x unified'
+        }, config);
+        
+        
+        // Funções para navegação entre páginas
+        function showErrorPage() {
+            document.getElementById('errorPage').classList.add('active');
+            
+            // Gerar gráfico de erros na página separada
+            
+            Plotly.newPlot('errorChartPage', [{
+                x: ["ERROR: Zod field at `#/definitions/output/properti...","ERROR: Request failed with status 429 - Rate limit...","ERROR: Invalid output type...","ERROR: Request timeout after 30 seconds...","ERROR: Failed to parse JSON response from judge ag..."],
+                y: [1,1,1,1,1],
+                type: 'bar',
+                marker: {color: '#ef4444', line: {color: '#dc2626', width: 2}},
+                hovertemplate: 'Error Type: %{x}<br>Count: %{y}<extra></extra>'
+            }], {
+                ...darkLayout,
+                xaxis: {...darkLayout.xaxis, title: 'Error Types'},
+                yaxis: {...darkLayout.yaxis, title: 'Count'},
+                margin: {l: 60, r: 40, t: 40, b: 100}
+            }, config);
+        }
+        
+        function hideErrorPage() {
+            document.getElementById('errorPage').classList.remove('active');
+        }
+    </script>
+</body>
+</html>

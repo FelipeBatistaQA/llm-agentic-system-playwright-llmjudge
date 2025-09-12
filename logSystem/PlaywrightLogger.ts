@@ -26,7 +26,15 @@ interface JudgeLogEntry {
     answer: string;
     rating: number; 
     status: 'PASS' | 'FAIL';
-    explanation: string; 
+    explanation: string;
+    criteria?: {
+        helpfulness: number;
+        relevance: number;
+        accuracy: number;
+        depth: number;
+        creativity: number;
+        levelOfDetail: number;
+    };
 }
 
 export class PlaywrightLogger {
@@ -172,6 +180,19 @@ ${JSON.stringify(entry.response, null, 2).split('\n').map(line => `║ ${line}`)
             const formattedExplanation = this.formatLongText(entry.explanation);
             const formattedAnswer = this.formatLongText(entry.answer);
             
+            let criteriaSection = '';
+            if (entry.criteria) {
+                criteriaSection = `║ 
+║ ── CRITERIA SCORES ──
+║ • Helpfulness: ${entry.criteria.helpfulness}/10
+║ • Relevance: ${entry.criteria.relevance}/10
+║ • Accuracy: ${entry.criteria.accuracy}/10
+║ • Depth: ${entry.criteria.depth}/10
+║ • Creativity: ${entry.criteria.creativity}/10
+║ • Level of Detail: ${entry.criteria.levelOfDetail}/10
+`;
+            }
+            
             return `╔══ JUDGE EVALUATION [${entry.timestamp}] ════════════════════════════════
 ║ Rating: ${entry.rating}/10
 ║ Status: ${entry.status} (threshold: 7)
@@ -180,8 +201,7 @@ ${JSON.stringify(entry.response, null, 2).split('\n').map(line => `║ ${line}`)
 ║ ${entry.question}
 ║ 
 ║ ── ANSWER ──
-${formattedAnswer}
-║ 
+${formattedAnswer}${criteriaSection}
 ║ ── EXPLANATION ──
 ${formattedExplanation}
 ╚════════════════════════════════════════════════════════════════════════`;

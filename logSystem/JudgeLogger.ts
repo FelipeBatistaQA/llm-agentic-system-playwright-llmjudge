@@ -25,7 +25,14 @@ export class JudgeLogger {
         }
     }
     
-    static logEvaluation(prompt: string, response: string, rating: number, explanation: string) {
+    static logEvaluation(prompt: string, response: string, rating: number, explanation: string, criteria?: {
+        helpfulness: number;
+        relevance: number;
+        accuracy: number;
+        depth: number;
+        creativity: number;
+        levelOfDetail: number;
+    }) {
         const timestamp = new Date().toISOString();
         const status = rating >= 7 ? 'PASS' : 'FAIL';
         
@@ -34,6 +41,9 @@ export class JudgeLogger {
         console.log('┌─ JUDGE ────────────────────────────────────────────────────────────────┐');
         console.log(`│ Rating: ${rating}/10 | Status: ${status}${' '.repeat(Math.max(0, 51 - rating.toString().length - status.length))} │`);
         console.log(`│ Question: ${this.truncate(prompt, 57)}${' '.repeat(Math.max(0, 57 - Math.min(57, prompt.length)))} │`);
+        if (criteria) {
+            console.log(`│ Criteria: H:${criteria.helpfulness} R:${criteria.relevance} A:${criteria.accuracy} D:${criteria.depth} C:${criteria.creativity} LoD:${criteria.levelOfDetail}${' '.repeat(Math.max(0, 42 - `H:${criteria.helpfulness} R:${criteria.relevance} A:${criteria.accuracy} D:${criteria.depth} C:${criteria.creativity} LoD:${criteria.levelOfDetail}`.length))} │`);
+        }
         console.log('└────────────────────────────────────────────────────────────────────────┘');
         console.log('');
         
@@ -44,14 +54,25 @@ export class JudgeLogger {
             rating,
             status: status as 'PASS' | 'FAIL',
             explanation,
+            criteria,
         });
         
+        const criteriaText = criteria ? 
+            `[${timestamp}] [JUDGE] Criteria Scores:
+[${timestamp}] [JUDGE]   • Helpfulness: ${criteria.helpfulness}/10
+[${timestamp}] [JUDGE]   • Relevance: ${criteria.relevance}/10
+[${timestamp}] [JUDGE]   • Accuracy: ${criteria.accuracy}/10
+[${timestamp}] [JUDGE]   • Depth: ${criteria.depth}/10
+[${timestamp}] [JUDGE]   • Creativity: ${criteria.creativity}/10
+[${timestamp}] [JUDGE]   • Level of Detail: ${criteria.levelOfDetail}/10
+` : '';
+
         const fileLogEntry = `[${timestamp}] [JUDGE] === EVALUATION RESULT ===
 [${timestamp}] [JUDGE] Rating: ${rating}/10
 [${timestamp}] [JUDGE] Status: ${status} (threshold: 7)
 [${timestamp}] [JUDGE] Question: ${prompt}
 [${timestamp}] [JUDGE] Answer: ${response}
-[${timestamp}] [JUDGE] Explanation: ${explanation}
+${criteriaText}[${timestamp}] [JUDGE] Explanation: ${explanation}
 [${timestamp}] [JUDGE] === END EVALUATION ===
 
 `;
@@ -65,7 +86,8 @@ export class JudgeLogger {
             rating,
             status: status as 'PASS' | 'FAIL',
             prompt,
-            output: response
+            output: response,
+            criteria
         });
     }
     

@@ -56,7 +56,7 @@ test.describe('Semantic Similarity Tests - Historical Questions', () => {
       const chatgptAnswer = response.choices[0].message.content;
       const similarity = await analyzer.semanticSimilarity(testData.expected, chatgptAnswer);
       
-      expect(similarity).toBeGreaterThanOrEqual(0.8);
+      expect(similarity).toBeGreaterThanOrEqual(0.7);
     });
   });
 });

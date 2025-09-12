@@ -35,13 +35,28 @@ export class LlmJudge extends BaseAgent {
 
       const judgeResult = result.finalOutput as JudgeResult;
 
-      JudgeLogger.logEvaluation('CONVERSATION_JUDGE', `Judge analysis of conversation with ${input.split('\n').length} lines`, judgeResult.rating, judgeResult.explanation);
+      // Calculate rating as rounded average of criteria scores
+      const criteriaValues = [
+        judgeResult.criteria.helpfulness,
+        judgeResult.criteria.relevance,
+        judgeResult.criteria.accuracy,
+        judgeResult.criteria.depth,
+        judgeResult.criteria.creativity,
+        judgeResult.criteria.levelOfDetail,
+      ];
+      
+      const calculatedRating = Math.round(
+        criteriaValues.reduce((sum, value) => sum + value, 0) / criteriaValues.length
+      );
+
+      JudgeLogger.logEvaluation('CONVERSATION_JUDGE', `Judge analysis of conversation with ${input.split('\n').length} lines`, calculatedRating, judgeResult.explanation, judgeResult.criteria);
 
       return {
-        ok: judgeResult.rating >= 8,
-        rating: judgeResult.rating,
+        ok: calculatedRating >= 8,
+        rating: calculatedRating,
         reason: judgeResult.explanation,
         explanation: judgeResult.explanation,
+        criteria: judgeResult.criteria,
       };
     } catch (error: any) {
       
@@ -63,7 +78,7 @@ export class LlmJudge extends BaseAgent {
     const result = await this.judge(input);
 
     if (result.ok) {
-      JudgeLogger.logEvaluation(prompt, reply, result.rating, result.explanation || '');
+      JudgeLogger.logEvaluation(prompt, reply, result.rating, result.explanation || '', result.criteria);
     }
 
     return result;
