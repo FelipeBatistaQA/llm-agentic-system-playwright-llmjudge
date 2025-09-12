@@ -264,7 +264,7 @@ export class UnifiedReportGenerator {
     <div class="footer">Generated on: ${new Date().toLocaleString('en-US')} | Total Records: ${stats.totalTests}</div>
     
     <!-- Página separada de erros -->
-    ${errorStats ? '<div id="errorPage" class="error-page"><button class="back-button" onclick="hideErrorPage()">← Back to Dashboard</button><div class="header"><h1>❌ Error Analysis</h1><p style="color: #9ca3af;">Found ' + errorStats.totalErrors + ' errors (' + errorStats.errorRate + '% error rate)</p></div><div class="chart-container" style="border: 2px solid #ef4444;"><div class="chart-title">Error Types Distribution</div><div id="errorChartPage"></div></div><div class="chart-container"><div class="chart-title">Detailed Error Log</div><table class="error-table"><thead><tr><th>Line</th><th>Time</th><th>Test Name</th><th>Prompt</th><th>Full Error Message</th></tr></thead><tbody>' + errorStats.errorDetails.map(err => '<tr><td class="error-line">' + err.lineNumber + '</td><td>' + err.timestamp + '</td><td class="error-test">' + err.testName + '</td><td class="error-message">' + err.prompt + '</td><td class="error-message">' + err.fullMessage + '</td></tr>').join('') + '</tbody></table></div></div>' : ''}
+    ${errorStats ? '<div id="errorPage" class="error-page"><button class="back-button" onclick="hideErrorPage()">← Back to Dashboard</button><div class="header"><h1>❌ Error Analysis</h1><p style="color: #9ca3af;">Found ' + errorStats.totalErrors + ' errors (' + errorStats.errorRate + '% error rate)</p></div><div class="chart-container" style="border: 2px solid #ef4444;"><div class="chart-title">📊 Error Categories</div><div id="errorChartPage"></div></div><div class="chart-container"><div class="chart-title">📋 Complete Error Details</div><table class="error-table"><thead><tr><th>Line</th><th>Time</th><th>Test Name</th><th>Prompt</th><th>Full Error Message</th></tr></thead><tbody>' + errorStats.errorDetails.map(err => '<tr><td class="error-line">' + err.lineNumber + '</td><td>' + err.timestamp + '</td><td class="error-test">' + err.testName + '</td><td class="error-message">' + err.prompt + '</td><td class="error-message">' + err.fullMessage + '</td></tr>').join('') + '</tbody></table></div></div>' : ''}
     <script>
         const darkLayout = { paper_bgcolor: '#262626', plot_bgcolor: '#1a1a1a', font: { color: '#ffffff' }, xaxis: { gridcolor: '#374151', zerolinecolor: '#374151', color: '#d1d5db' }, yaxis: { gridcolor: '#374151', zerolinecolor: '#374151', color: '#d1d5db' } };
         const config = { responsive: true, displayModeBar: true, modeBarButtonsToRemove: ['pan2d', 'select2d', 'lasso2d', 'autoScale2d'], displaylogo: false };
@@ -423,9 +423,11 @@ export class UnifiedReportGenerator {
             Plotly.newPlot('errorChartPage', [{
                 x: ${JSON.stringify(errorStats.errorTypes)},
                 y: ${JSON.stringify(errorStats.errorCounts)},
+                customdata: ${JSON.stringify(errorStats.errorExamples)},
                 type: 'bar',
                 marker: {color: '#ef4444', line: {color: '#dc2626', width: 2}},
-                hovertemplate: 'Error Type: %{x}<br>Count: %{y}<extra></extra>'
+                hovertemplate: '<b>%{x}</b><br>Count: %{y}<br><br><i>Example Error:</i><br>%{customdata}<extra></extra>',
+                hoverlabel: {bgcolor: '#1f2937', bordercolor: '#ef4444', font: {color: '#ffffff', size: 10}, namelength: -1}
             }], {
                 ...darkLayout,
                 xaxis: {...darkLayout.xaxis, title: 'Error Types'},
@@ -470,22 +472,29 @@ export class UnifiedReportGenerator {
       lineNumber: e.lineNumber || 'Unknown'
     }));
     
-    // Agrupar por mensagem de erro similar (automático, sem categorização hardcoded)
-    const errorGroups = errorDetails.reduce((acc, err) => {
-      // Usar primeiras 50 chars da mensagem como chave de agrupamento
-      const key = err.shortMessage.substring(0, 50) + '...';
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(err);
+    // Categorizar de forma simples para o gráfico com exemplos de mensagens
+    const categoryData = errorDetails.reduce((acc, err) => {
+      let category = 'Other';
+      if (err.fullMessage.includes('Zod field')) category = 'Schema';
+      else if (err.fullMessage.includes('Rate limit')) category = 'API Limit';
+      else if (err.fullMessage.includes('timeout')) category = 'Timeout';
+      else if (err.fullMessage.includes('Invalid output')) category = 'Invalid Output';
+      else if (err.fullMessage.includes('parse')) category = 'Parse Error';
+      
+      if (!acc[category]) {
+        acc[category] = { count: 0, example: err.fullMessage };
+      }
+      acc[category].count++;
       return acc;
-    }, {} as Record<string, typeof errorDetails>);
+    }, {} as Record<string, {count: number, example: string}>);
     
     return {
       totalErrors: this.errors.length,
       errorRate: ((this.errors.length / (this.data.length + this.errors.length)) * 100).toFixed(1),
-      errorTypes: Object.keys(errorGroups),
-      errorCounts: Object.values(errorGroups).map(group => group.length),
+      errorTypes: Object.keys(categoryData),
+      errorCounts: Object.values(categoryData).map(data => data.count),
+      errorExamples: Object.values(categoryData).map(data => data.example),
       errorDetails: errorDetails.slice(-15), // Últimos 15 erros com TODA informação
-      errorGroups
     };
   }
 

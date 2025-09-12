@@ -34,11 +34,11 @@
 <body>
     <div class="header"><h1>LLM Judge System - Test Results</h1></div>
     <div class="stats-container">
-        <div class="stat-box" style="--bg-color: #2563eb; --bg-color-dark: #1d4ed8;"><div class="stat-value">26</div><div class="stat-label">Total Tests</div></div>
-        <div class="stat-box" style="--bg-color: #10b981; --bg-color-dark: #059669;"><div class="stat-value">80.8%</div><div class="stat-label">Success Rate</div></div>
+        <div class="stat-box" style="--bg-color: #2563eb; --bg-color-dark: #1d4ed8;"><div class="stat-value">27</div><div class="stat-label">Total Tests</div></div>
+        <div class="stat-box" style="--bg-color: #10b981; --bg-color-dark: #059669;"><div class="stat-value">77.8%</div><div class="stat-label">Success Rate</div></div>
         <div class="stat-box" style="--bg-color: #f59e0b; --bg-color-dark: #d97706;"><div class="stat-value">9.3</div><div class="stat-label">Average Rating</div></div>
         <div class="stat-box" style="--bg-color: #8b5cf6; --bg-color-dark: #7c3aed;"><div class="stat-value">9-10</div><div class="stat-label">Range</div></div>
-        <div class="stat-box clickable" style="--bg-color: #ef4444; --bg-color-dark: #dc2626;" onclick="showErrorPage()"><div class="stat-value">5</div><div class="stat-label">Errors</div></div>
+        <div class="stat-box clickable" style="--bg-color: #ef4444; --bg-color-dark: #dc2626;" onclick="showErrorPage()"><div class="stat-value">6</div><div class="stat-label">Errors</div></div>
     </div>
     <div class="chart-container"><div class="chart-title">Rating Distribution</div><div id="distributionChart"></div></div>
     <div class="chart-container"><div class="chart-title">PASS/FAIL Ratio</div><div id="statusChart"></div></div>
@@ -47,10 +47,10 @@
     <div class="chart-container"><div class="chart-title">Criteria Average Scores</div><div id="criteriaChart"></div></div>
     <div class="chart-container"><div class="chart-title">Criteria Breakdown</div><div id="criteriaBarChart"></div></div>
     <div class="chart-container"><div class="chart-title">📊 Criteria Distribution (Min/Avg/Max)</div><div id="criteriaDistChart"></div></div>
-    <div class="footer">Generated on: 9/12/2025, 4:51:11 PM | Total Records: 26</div>
+    <div class="footer">Generated on: 9/12/2025, 5:47:38 PM | Total Records: 27</div>
     
     <!-- Página separada de erros -->
-    <div id="errorPage" class="error-page"><button class="back-button" onclick="hideErrorPage()">← Back to Dashboard</button><div class="header"><h1>❌ Error Analysis</h1><p style="color: #9ca3af;">Found 5 errors (19.2% error rate)</p></div><div class="chart-container" style="border: 2px solid #ef4444;"><div class="chart-title">Error Types Distribution</div><div id="errorChartPage"></div></div><div class="chart-container"><div class="chart-title">Detailed Error Log</div><table class="error-table"><thead><tr><th>Line</th><th>Time</th><th>Test Name</th><th>Prompt</th><th>Full Error Message</th></tr></thead><tbody><tr><td class="error-line">14</td><td>12/09/2025, 15:46:22</td><td class="error-test">geography-question-schema-error</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Zod field at `#/definitions/output/properties/testedItem/properties/question` uses `.optional()` without `.nullable()` which is not supported by the API. See: https://platform.openai.com/docs/guides/structured-outputs?api-mode=responses#all-fields-must-be-required</td></tr><tr><td class="error-line">15</td><td>12/09/2025, 15:46:22</td><td class="error-test">geography-question-api-error</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Request failed with status 429 - Rate limit exceeded</td></tr><tr><td class="error-line">24</td><td>12/09/2025, 15:46:30</td><td class="error-test">geography-question-invalid-output</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Invalid output type</td></tr><tr><td class="error-line">25</td><td>12/09/2025, 15:46:35</td><td class="error-test">geography-question-timeout-error</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Request timeout after 30 seconds</td></tr><tr><td class="error-line">26</td><td>12/09/2025, 15:46:40</td><td class="error-test">geography-question-parsing-error</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Failed to parse JSON response from judge agent</td></tr></tbody></table></div></div>
+    <div id="errorPage" class="error-page"><button class="back-button" onclick="hideErrorPage()">← Back to Dashboard</button><div class="header"><h1>❌ Error Analysis</h1><p style="color: #9ca3af;">Found 6 errors (22.2% error rate)</p></div><div class="chart-container" style="border: 2px solid #ef4444;"><div class="chart-title">📊 Error Categories</div><div id="errorChartPage"></div></div><div class="chart-container"><div class="chart-title">📋 Complete Error Details</div><table class="error-table"><thead><tr><th>Line</th><th>Time</th><th>Test Name</th><th>Prompt</th><th>Full Error Message</th></tr></thead><tbody><tr><td class="error-line">14</td><td>12/09/2025, 15:46:22</td><td class="error-test">geography-question-schema-error</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Zod field at `#/definitions/output/properties/testedItem/properties/question` uses `.optional()` without `.nullable()` which is not supported by the API. See: https://platform.openai.com/docs/guides/structured-outputs?api-mode=responses#all-fields-must-be-required</td></tr><tr><td class="error-line">15</td><td>12/09/2025, 15:46:22</td><td class="error-test">geography-question-api-error</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Request failed with status 429 - Rate limit exceeded</td></tr><tr><td class="error-line">24</td><td>12/09/2025, 15:46:30</td><td class="error-test">geography-question-invalid-output</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Invalid output type</td></tr><tr><td class="error-line">25</td><td>12/09/2025, 15:46:35</td><td class="error-test">geography-question-timeout-error</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Request timeout after 30 seconds</td></tr><tr><td class="error-line">26</td><td>12/09/2025, 15:46:40</td><td class="error-test">geography-question-parsing-error</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Failed to parse JSON response from judge agent</td></tr><tr><td class="error-line">28</td><td>12/09/2025, 15:46:30</td><td class="error-test">geography-question-invalid-output</td><td class="error-message">JUDGE</td><td class="error-message">ERROR: Invalid output type</td></tr></tbody></table></div></div>
     <script>
         const darkLayout = { paper_bgcolor: '#262626', plot_bgcolor: '#1a1a1a', font: { color: '#ffffff' }, xaxis: { gridcolor: '#374151', zerolinecolor: '#374151', color: '#d1d5db' }, yaxis: { gridcolor: '#374151', zerolinecolor: '#374151', color: '#d1d5db' } };
         const config = { responsive: true, displayModeBar: true, modeBarButtonsToRemove: ['pan2d', 'select2d', 'lasso2d', 'autoScale2d'], displaylogo: false };
@@ -207,11 +207,13 @@
             // Gerar gráfico de erros na página separada
             
             Plotly.newPlot('errorChartPage', [{
-                x: ["ERROR: Zod field at `#/definitions/output/properti...","ERROR: Request failed with status 429 - Rate limit...","ERROR: Invalid output type...","ERROR: Request timeout after 30 seconds...","ERROR: Failed to parse JSON response from judge ag..."],
-                y: [1,1,1,1,1],
+                x: ["Schema","API Limit","Invalid Output","Timeout","Parse Error"],
+                y: [1,1,2,1,1],
+                customdata: ["ERROR: Zod field at `#/definitions/output/properties/testedItem/properties/question` uses `.optional()` without `.nullable()` which is not supported by the API. See: https://platform.openai.com/docs/guides/structured-outputs?api-mode=responses#all-fields-must-be-required","ERROR: Request failed with status 429 - Rate limit exceeded","ERROR: Invalid output type","ERROR: Request timeout after 30 seconds","ERROR: Failed to parse JSON response from judge agent"],
                 type: 'bar',
                 marker: {color: '#ef4444', line: {color: '#dc2626', width: 2}},
-                hovertemplate: 'Error Type: %{x}<br>Count: %{y}<extra></extra>'
+                hovertemplate: '<b>%{x}</b><br>Count: %{y}<br><br><i>Example Error:</i><br>%{customdata}<extra></extra>',
+                hoverlabel: {bgcolor: '#1f2937', bordercolor: '#ef4444', font: {color: '#ffffff', size: 10}, namelength: -1}
             }], {
                 ...darkLayout,
                 xaxis: {...darkLayout.xaxis, title: 'Error Types'},
