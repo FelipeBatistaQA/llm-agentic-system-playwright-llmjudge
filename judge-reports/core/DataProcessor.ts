@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import csv from 'csv-parser';
-import { JudgeResult, ReportStats, CriteriaAverages, CriteriaDistribution, CriteriaTrend, ErrorStats, ProcessedData } from './ReportData';
+import { JudgeResult, ReportStats, CriteriaAverages, CriteriaDistribution, CriteriaTrend, ErrorStats, ProcessedData, RatingGroup } from './ReportData';
 
 export class DataProcessor {
   private data: JudgeResult[] = [];
@@ -210,6 +210,30 @@ export class DataProcessor {
     return { testLabels, testNames, ratings };
   }
 
+  getRatingGroups(): RatingGroup[] {
+    const groups = new Map<string, JudgeResult[]>();
+    
+    this.data.forEach(item => {
+      const ratingKey = item.rating.toFixed(1);
+      if (!groups.has(ratingKey)) {
+        groups.set(ratingKey, []);
+      }
+      groups.get(ratingKey)!.push(item);
+    });
+    
+    return Array.from(groups.entries())
+      .map(([rating, tests]) => ({
+        rating,
+        count: tests.length,
+        tests: tests.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      }))
+      .sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
+  }
+
+  getTestDetails(): JudgeResult[] {
+    return [...this.data].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  }
+
   getProcessedData(): ProcessedData {
     return {
       stats: this.calculateStats(),
@@ -219,7 +243,9 @@ export class DataProcessor {
       criteriaAverages: this.calculateCriteriaAverages(),
       criteriaDistribution: this.getCriteriaDistribution(),
       criteriaTrend: this.getCriteriaTrend(),
-      errorStats: this.getErrorStats()
+      errorStats: this.getErrorStats(),
+      ratingGroups: this.getRatingGroups(),
+      testDetails: this.getTestDetails()
     };
   }
 }

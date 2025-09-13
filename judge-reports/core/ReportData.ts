@@ -69,6 +69,12 @@ export interface ErrorStats {
   }>;
 }
 
+export interface RatingGroup {
+  rating: string;
+  count: number;
+  tests: JudgeResult[];
+}
+
 export interface ProcessedData {
   stats: ReportStats;
   ratingCounts: number[];
@@ -82,6 +88,8 @@ export interface ProcessedData {
   criteriaDistribution: CriteriaDistribution[] | null;
   criteriaTrend: CriteriaTrend | null;
   errorStats: ErrorStats | null;
+  ratingGroups?: RatingGroup[];
+  testDetails?: JudgeResult[];
 }
 
 export interface GeneratorOptions {
