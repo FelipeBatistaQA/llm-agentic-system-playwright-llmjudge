@@ -123,6 +123,50 @@ export class HTMLGenerator extends BaseGenerator {
         .criteria-bar { width: 100%; height: 8px; background: #4a5568; border-radius: 4px; overflow: hidden; margin-top: 8px; clear: both; }
         .criteria-fill { height: 100%; background: linear-gradient(90deg, #f56565, #ed8936, #ecc94b, #48bb78, #38b2ac); transition: width 0.3s ease; }
         
+        /* Sistema de tabs para logs */
+        .logs-tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid #4a5568; }
+        .tab-button { background: transparent; color: #a0aec0; border: none; padding: 12px 20px; cursor: pointer; font-size: 1em; transition: all 0.3s; border-bottom: 2px solid transparent; }
+        .tab-button:hover { color: #e2e8f0; background: rgba(255,255,255,0.05); }
+        .tab-button.active { color: #4299e1; border-bottom-color: #4299e1; background: rgba(66, 153, 225, 0.1); }
+        
+        .logs-container { margin-top: 20px; }
+        .log-tab-content { display: none; }
+        .log-tab-content.active { display: block; }
+        .log-entry { background: #1a1a1a; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 4px solid #4299e1; }
+        .log-entry.HTTP { border-left-color: #f59e0b; }
+        .log-entry.LLM { border-left-color: #10b981; }
+        .log-entry.JUDGE { border-left-color: #8b5cf6; }
+        .log-timestamp { color: #a0aec0; font-size: 0.9em; margin-bottom: 8px; }
+        .log-content { white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 0.85em; line-height: 1.4; }
+        .log-info { }
+        .log-item { margin-bottom: 8px; color: #e2e8f0; }
+        .log-item strong { color: #4299e1; }
+        .log-text { background: #2d3748; padding: 10px; border-radius: 6px; margin: 5px 0; font-family: 'Courier New', monospace; font-size: 0.85em; line-height: 1.4; border: 1px solid #4a5568; max-height: 200px; overflow-y: auto; }
+        .status-success { color: #10b981; font-weight: bold; }
+        .status-error { color: #ef4444; font-weight: bold; }
+        .rating-value { color: #f59e0b; font-weight: bold; font-size: 1.1em; }
+        .criteria-mini { display: flex; gap: 10px; margin-top: 5px; }
+        .criteria-mini span { background: #4a5568; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; color: #e2e8f0; }
+        
+        /* Dropdowns expansíveis */
+        .dropdown-container { margin: 10px 0; }
+        .dropdown-toggle { 
+            background: #4a5568; color: #e2e8f0; border: none; padding: 8px 12px; 
+            border-radius: 6px; cursor: pointer; width: 100%; text-align: left;
+            transition: background 0.3s; display: flex; justify-content: space-between; align-items: center;
+        }
+        .dropdown-toggle:hover { background: #2d3748; }
+        .dropdown-content { 
+            display: none; margin-top: 8px; background: #1a1a1a; 
+            border: 1px solid #4a5568; border-radius: 6px; padding: 10px; max-height: 300px; overflow-y: auto;
+        }
+        .dropdown-content.open { display: block; }
+        .json-content { 
+            color: #a0aec0; font-family: 'Courier New', monospace; 
+            font-size: 0.85em; white-space: pre-wrap; margin: 0;
+        }
+        .dropdown-icon { font-size: 0.8em; }
+        
         .clickable { cursor: pointer; transition: transform 0.2s ease; }
         .clickable:hover { transform: scale(1.05); }
     `;
@@ -130,9 +174,9 @@ export class HTMLGenerator extends BaseGenerator {
 
   private getMainPageHTML(stats: ReportStats, errorStats: ErrorStats | null, criteriaAverages: any, criteriaTrend: any, criteriaDistribution: any): string {
     return `
-      <div class="header"><h1>LLM Judge System - Test Results</h1></div>
+    <div class="header"><h1>LLM Judge System - Test Results</h1></div>
       
-      <div class="stats-container">
+    <div class="stats-container">
           <div class="stat-box" style="--bg-color: #2563eb; --bg-color-dark: #1d4ed8;">
               <div class="stat-value">${stats.totalTests}</div>
               <div class="stat-label">Total Tests</div>
@@ -155,14 +199,14 @@ export class HTMLGenerator extends BaseGenerator {
       <div class="chart-container">
           <div class="chart-title">📊 Rating Distribution (Clique nas barras para ver detalhes)</div>
           <div id="distributionChart"></div>
-      </div>
+    </div>
       
-      <div class="chart-container"><div class="chart-title">PASS/FAIL Ratio</div><div id="statusChart"></div></div>
-      <div class="chart-container"><div class="chart-title">Recent Performance Trend</div><div id="trendChart"></div></div>
-      ${criteriaTrend ? '<div class="chart-container"><div class="chart-title">📈 Criteria Trends</div><div id="criteriaTrendChart"></div></div>' : ''}
-      ${criteriaAverages ? '<div class="chart-container"><div class="chart-title">Criteria Average Scores</div><div id="criteriaChart"></div></div>' : ''}
-      ${criteriaAverages ? '<div class="chart-container"><div class="chart-title">Criteria Breakdown</div><div id="criteriaBarChart"></div></div>' : ''}
-      ${criteriaDistribution ? '<div class="chart-container"><div class="chart-title">📊 Criteria Distribution (Min/Avg/Max)</div><div id="criteriaDistChart"></div></div>' : ''}
+    <div class="chart-container"><div class="chart-title">PASS/FAIL Ratio</div><div id="statusChart"></div></div>
+    <div class="chart-container"><div class="chart-title">Recent Performance Trend</div><div id="trendChart"></div></div>
+    ${criteriaTrend ? '<div class="chart-container"><div class="chart-title">📈 Criteria Trends</div><div id="criteriaTrendChart"></div></div>' : ''}
+    ${criteriaAverages ? '<div class="chart-container"><div class="chart-title">Criteria Average Scores</div><div id="criteriaChart"></div></div>' : ''}
+    ${criteriaAverages ? '<div class="chart-container"><div class="chart-title">Criteria Breakdown</div><div id="criteriaBarChart"></div></div>' : ''}
+    ${criteriaDistribution ? '<div class="chart-container"><div class="chart-title">📊 Criteria Distribution (Min/Avg/Max)</div><div id="criteriaDistChart"></div></div>' : ''}
       <div class="footer">Generated on: ${new Date().toLocaleString('pt-BR')} | Total Records: ${stats.totalTests}</div>
     `;
   }
@@ -211,6 +255,25 @@ export class HTMLGenerator extends BaseGenerator {
                   <h3>📊 Critérios de Avaliação</h3>
                   <div id="testCriteria" class="criteria-grid"></div>
               </div>
+              
+              <div class="test-section">
+                  <h3>💭 Explicação do Judge</h3>
+                  <div id="testExplanation" class="content-box"></div>
+              </div>
+              
+              <div class="test-section" id="logsSection">
+                  <h3>📋 Logs Detalhados</h3>
+                  <div class="logs-tabs">
+                      <button class="tab-button active" onclick="showLogTab('http')">HTTP</button>
+                      <button class="tab-button" onclick="showLogTab('llm')">LLM</button>
+                      <button class="tab-button" onclick="showLogTab('judge')">Judge</button>
+                  </div>
+                  <div id="testLogs" class="logs-container">
+                      <div id="httpLogs" class="log-tab-content active"></div>
+                      <div id="llmLogs" class="log-tab-content"></div>
+                      <div id="judgeLogs" class="log-tab-content"></div>
+                  </div>
+              </div>
           </div>
       </div>
     `;
@@ -225,9 +288,9 @@ export class HTMLGenerator extends BaseGenerator {
       const testDetails = ${JSON.stringify(testDetails)};
       
       // Configurações do gráfico
-      const darkLayout = { paper_bgcolor: '#262626', plot_bgcolor: '#1a1a1a', font: { color: '#ffffff' }, xaxis: { gridcolor: '#374151', zerolinecolor: '#374151', color: '#d1d5db' }, yaxis: { gridcolor: '#374151', zerolinecolor: '#374151', color: '#d1d5db' } };
-      const config = { responsive: true, displayModeBar: true, modeBarButtonsToRemove: ['pan2d', 'select2d', 'lasso2d', 'autoScale2d'], displaylogo: false };
-      
+        const darkLayout = { paper_bgcolor: '#262626', plot_bgcolor: '#1a1a1a', font: { color: '#ffffff' }, xaxis: { gridcolor: '#374151', zerolinecolor: '#374151', color: '#d1d5db' }, yaxis: { gridcolor: '#374151', zerolinecolor: '#374151', color: '#d1d5db' } };
+        const config = { responsive: true, displayModeBar: true, modeBarButtonsToRemove: ['pan2d', 'select2d', 'lasso2d', 'autoScale2d'], displaylogo: false };
+        
       // Gráfico interativo de distribuição
       function createInteractiveRatingChart() {
           const chartData = {
@@ -317,6 +380,9 @@ export class HTMLGenerator extends BaseGenerator {
           document.getElementById('testPrompt').textContent = test.prompt;
           document.getElementById('testOutput').textContent = test.output;
           
+          // Explicação
+          document.getElementById('testExplanation').textContent = test.explanation || 'Não disponível';
+          
           // Critérios
           if (test.criteria) {
               const criteriaGrid = document.getElementById('testCriteria');
@@ -332,165 +398,282 @@ export class HTMLGenerator extends BaseGenerator {
                   \`).join('');
           }
           
+          // Logs estruturados
+          if (test.logs) {
+              // HTTP Logs
+              document.getElementById('httpLogs').innerHTML = test.logs.http.length > 0 
+                  ? test.logs.http.map((log, index) => \`
+                      <div class="log-entry HTTP">
+                          <div class="log-timestamp">\${new Date(log.timestamp).toLocaleString('pt-BR')}</div>
+                          <div class="log-info">
+                              <div class="log-item"><strong>M\u00e9todo:</strong> \${log.method}</div>
+                              <div class="log-item"><strong>URL:</strong> \${log.url}</div>
+                              <div class="log-item"><strong>Status:</strong> <span class="status-\${log.status >= 200 && log.status < 300 ? 'success' : 'error'}">\${log.status}</span></div>
+                              \${log.model ? \`<div class="log-item"><strong>Modelo:</strong> \${log.model}</div>\` : ''}
+                              \${log.tokens ? \`<div class="log-item"><strong>Tokens:</strong> \${log.tokens.total} (prompt: \${log.tokens.prompt}, completion: \${log.tokens.completion})</div>\` : ''}
+                              
+                              \${log.payload ? \`
+                                  <div class="dropdown-container">
+                                      <button class="dropdown-toggle" onclick="toggleDropdown('payload-\${index}')">
+                                          📤 Ver Payload <span id="payload-\${index}-icon" class="dropdown-icon">▼</span>
+                                      </button>
+                                      <div id="payload-\${index}" class="dropdown-content">
+                                          <pre class="json-content">\${log.payload}</pre>
+                                      </div>
+                                  </div>
+                              \` : ''}
+                              
+                              \${log.response ? \`
+                                  <div class="dropdown-container">
+                                      <button class="dropdown-toggle" onclick="toggleDropdown('response-\${index}')">
+                                          📥 Ver Response <span id="response-\${index}-icon" class="dropdown-icon">▼</span>
+                                      </button>
+                                      <div id="response-\${index}" class="dropdown-content">
+                                          <pre class="json-content">\${log.response}</pre>
+                                      </div>
+                                  </div>
+                              \` : ''}
+                          </div>
+                      </div>
+                  \`).join('')
+                  : '<div class="log-entry"><div class="log-content">Nenhuma requisição HTTP encontrada.</div></div>';
+              
+              // LLM Logs
+              document.getElementById('llmLogs').innerHTML = test.logs.llm.length > 0
+                  ? test.logs.llm.map(log => \`
+                      <div class="log-entry LLM">
+                          <div class="log-timestamp">\${new Date(log.timestamp).toLocaleString('pt-BR')}</div>
+                          <div class="log-info">
+                              <div class="log-item"><strong>Modelo:</strong> \${log.model}</div>
+                              <div class="log-item"><strong>Finish Reason:</strong> \${log.finishReason}</div>
+                              <div class="log-item"><strong>Tokens:</strong> \${log.tokens.total} (prompt: \${log.tokens.prompt}, completion: \${log.tokens.completion})</div>
+                              <div class="log-item"><strong>Prompt:</strong></div>
+                              <div class="log-text">\${log.prompt}</div>
+                              <div class="log-item"><strong>Resposta:</strong></div>
+                              <div class="log-text">\${log.response}</div>
+                          </div>
+                      </div>
+                  \`).join('')
+                  : '<div class="log-entry"><div class="log-content">Nenhuma intera\u00e7\u00e3o LLM encontrada.</div></div>';
+              
+              // Judge Logs
+              document.getElementById('judgeLogs').innerHTML = test.logs.judge.length > 0
+                  ? test.logs.judge.map(log => \`
+                      <div class="log-entry JUDGE">
+                          <div class="log-timestamp">\${new Date(log.timestamp).toLocaleString('pt-BR')}</div>
+                          <div class="log-info">
+                              <div class="log-item"><strong>Rating:</strong> <span class="rating-value">\${log.rating}/10</span></div>
+                              <div class="log-item"><strong>Status:</strong> <span class="status-\${log.status.includes('PASS') ? 'success' : 'error'}">\${log.status}</span></div>
+                              <div class="log-item"><strong>Quest\u00e3o:</strong></div>
+                              <div class="log-text">\${log.question}</div>
+                              <div class="log-item"><strong>Resposta Avaliada:</strong></div>
+                              <div class="log-text">\${log.answer}</div>
+                              \${log.criteria ? \`
+                                  <div class="log-item"><strong>Crit\u00e9rios:</strong></div>
+                                  <div class="criteria-mini">
+                                      <span>H:\${log.criteria.helpfulness}</span>
+                                      <span>R:\${log.criteria.relevance}</span>
+                                      <span>A:\${log.criteria.accuracy}</span>
+                                      <span>D:\${log.criteria.depth}</span>
+                                      <span>LoD:\${log.criteria.levelOfDetail}</span>
+                                  </div>
+                              \` : ''}
+                              <div class="log-item"><strong>Explica\u00e7\u00e3o:</strong></div>
+                              <div class="log-text" style="max-height: none; white-space: pre-wrap;">\${log.explanation}</div>
+                          </div>
+                      </div>
+                  \`).join('')
+                  : '<div class="log-entry"><div class="log-content">Nenhuma avalia\u00e7\u00e3o do judge encontrada.</div></div>';
+          } else {
+              document.getElementById('httpLogs').innerHTML = '<div class="log-entry"><div class="log-content">Logs n\u00e3o dispon\u00edveis.</div></div>';
+              document.getElementById('llmLogs').innerHTML = '<div class="log-entry"><div class="log-content">Logs n\u00e3o dispon\u00edveis.</div></div>';
+              document.getElementById('judgeLogs').innerHTML = '<div class="log-entry"><div class="log-content">Logs n\u00e3o dispon\u00edveis.</div></div>';
+          }
+          
           showPage('testDetailPage');
       }
       
+      // Função para alternar entre tabs de logs
+      function showLogTab(tabName) {
+          // Remover active de todos os botões e conteúdos
+          document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+          document.querySelectorAll('.log-tab-content').forEach(content => content.classList.remove('active'));
+          
+          // Ativar o tab selecionado
+          document.querySelector(\`button[onclick="showLogTab('\${tabName}')"]\`).classList.add('active');
+          document.getElementById(\`\${tabName}Logs\`).classList.add('active');
+      }
+      
+      // Função para controlar dropdowns expansíveis
+      function toggleDropdown(dropdownId) {
+          const content = document.getElementById(dropdownId);
+          const icon = document.getElementById(dropdownId + '-icon');
+          
+          if (content.classList.contains('open')) {
+              content.classList.remove('open');
+              icon.textContent = '▼';
+          } else {
+              content.classList.add('open');
+              icon.textContent = '▲';
+          }
+      }
+      
       // Gráficos existentes
-      Plotly.newPlot('statusChart', [{labels: ${JSON.stringify(Object.keys(statusCounts))}, values: ${JSON.stringify(Object.values(statusCounts))}, type: 'pie', hole: 0.4, marker: {colors: ['#10b981', '#ef4444'], line: {color: '#ffffff', width: 2}}, textfont: {color: '#ffffff', size: 14}, hovertemplate: '%{label}: %{value}<br>%{percent}<extra></extra>'}], {...darkLayout, margin: {l: 40, r: 40, t: 40, b: 40}, showlegend: true, legend: {font: {color: '#d1d5db'}, orientation: 'h', x: 0.5, xanchor: 'center', y: -0.1}}, config);
-      
-      Plotly.newPlot('trendChart', [{x: ${JSON.stringify(trendData.testLabels.slice(-50))}, y: ${JSON.stringify(trendData.ratings.slice(-50))}, customdata: ${JSON.stringify(trendData.testNames.slice(-50))}, type: 'scatter', mode: 'lines+markers', line: {color: '#f59e0b', width: 3}, marker: {color: '#f59e0b', size: 8, line: {color: '#d97706', width: 2}}, hovertemplate: '<b>%{x}</b><br><span style="color:#f59e0b">🎯 Rating: %{y}/10</span><br><span style="color:#60a5fa">📋 %{customdata}</span><extra></extra>', hoverlabel: {bgcolor: '#1f2937', bordercolor: '#f59e0b', font: {color: '#ffffff', size: 12}}}], {...darkLayout, xaxis: {...darkLayout.xaxis, title: 'Test Sequence (Last 50)'}, yaxis: {...darkLayout.yaxis, title: 'Rating', range: [0, 10]}, margin: {l: 60, r: 40, t: 40, b: 80}}, config);
-      
-      ${criteriaAverages ? `
-      Plotly.newPlot('criteriaChart', [{
-          type: 'scatterpolar',
+        Plotly.newPlot('statusChart', [{labels: ${JSON.stringify(Object.keys(statusCounts))}, values: ${JSON.stringify(Object.values(statusCounts))}, type: 'pie', hole: 0.4, marker: {colors: ['#10b981', '#ef4444'], line: {color: '#ffffff', width: 2}}, textfont: {color: '#ffffff', size: 14}, hovertemplate: '%{label}: %{value}<br>%{percent}<extra></extra>'}], {...darkLayout, margin: {l: 40, r: 40, t: 40, b: 40}, showlegend: true, legend: {font: {color: '#d1d5db'}, orientation: 'h', x: 0.5, xanchor: 'center', y: -0.1}}, config);
+        
+        Plotly.newPlot('trendChart', [{x: ${JSON.stringify(trendData.testLabels.slice(-50))}, y: ${JSON.stringify(trendData.ratings.slice(-50))}, customdata: ${JSON.stringify(trendData.testNames.slice(-50))}, type: 'scatter', mode: 'lines+markers', line: {color: '#f59e0b', width: 3}, marker: {color: '#f59e0b', size: 8, line: {color: '#d97706', width: 2}}, hovertemplate: '<b>%{x}</b><br><span style="color:#f59e0b">🎯 Rating: %{y}/10</span><br><span style="color:#60a5fa">📋 %{customdata}</span><extra></extra>', hoverlabel: {bgcolor: '#1f2937', bordercolor: '#f59e0b', font: {color: '#ffffff', size: 12}}}], {...darkLayout, xaxis: {...darkLayout.xaxis, title: 'Test Sequence (Last 50)'}, yaxis: {...darkLayout.yaxis, title: 'Rating', range: [0, 10]}, margin: {l: 60, r: 40, t: 40, b: 80}}, config);
+        
+        ${criteriaAverages ? `
+        Plotly.newPlot('criteriaChart', [{
+            type: 'scatterpolar',
           r: [${criteriaAverages.helpfulness}, ${criteriaAverages.relevance}, ${criteriaAverages.accuracy}, ${criteriaAverages.depth}, ${criteriaAverages.levelOfDetail}],
           theta: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Level of Detail'],
-          fill: 'toself',
-          fillcolor: 'rgba(16, 185, 129, 0.2)',
-          line: { color: '#10b981', width: 3 },
-          marker: { color: '#10b981', size: 8, line: { color: '#059669', width: 2 } },
-          hovertemplate: '%{theta}: %{r}<extra></extra>'
-      }], {
-          ...darkLayout,
-          polar: {
-              radialaxis: {
-                  visible: true,
-                  range: [0, 10],
-                  gridcolor: '#374151',
-                  tickcolor: '#d1d5db'
-              },
-              angularaxis: {
-                  tickcolor: '#d1d5db',
-                  gridcolor: '#374151'
-              },
-              bgcolor: 'rgba(0,0,0,0)'
-          },
-          margin: { l: 60, r: 60, t: 40, b: 40 }
+            fill: 'toself',
+            fillcolor: 'rgba(16, 185, 129, 0.2)',
+            line: { color: '#10b981', width: 3 },
+            marker: { color: '#10b981', size: 8, line: { color: '#059669', width: 2 } },
+            hovertemplate: '%{theta}: %{r}<extra></extra>'
+        }], {
+            ...darkLayout,
+            polar: {
+                radialaxis: {
+                    visible: true,
+                    range: [0, 10],
+                    gridcolor: '#374151',
+                    tickcolor: '#d1d5db'
+                },
+                angularaxis: {
+                    tickcolor: '#d1d5db',
+                    gridcolor: '#374151'
+                },
+                bgcolor: 'rgba(0,0,0,0)'
+            },
+            margin: { l: 60, r: 60, t: 40, b: 40 }
       }, config);
-      
-      Plotly.newPlot('criteriaBarChart', [{
+        
+        Plotly.newPlot('criteriaBarChart', [{
           x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Level of Detail'],
           y: [${criteriaAverages.helpfulness}, ${criteriaAverages.relevance}, ${criteriaAverages.accuracy}, ${criteriaAverages.depth}, ${criteriaAverages.levelOfDetail}],
-          type: 'bar',
-          marker: {color: '#8b5cf6', line: {color: '#7c3aed', width: 2}},
-          hovertemplate: '%{x}: %{y}/10<extra></extra>'
-      }], {
-          ...darkLayout,
-          xaxis: {...darkLayout.xaxis, title: 'Criteria'},
-          yaxis: {...darkLayout.yaxis, title: 'Average Score', range: [0, 10]},
-          margin: {l: 60, r: 40, t: 40, b: 80}
-      }, config);` : ''}
-      
-      ${criteriaDistribution ? `
-      Plotly.newPlot('criteriaDistChart', [
-          {
+            type: 'bar',
+            marker: {color: '#8b5cf6', line: {color: '#7c3aed', width: 2}},
+            hovertemplate: '%{x}: %{y}/10<extra></extra>'
+        }], {
+            ...darkLayout,
+            xaxis: {...darkLayout.xaxis, title: 'Criteria'},
+            yaxis: {...darkLayout.yaxis, title: 'Average Score', range: [0, 10]},
+            margin: {l: 60, r: 40, t: 40, b: 80}
+        }, config);` : ''}
+        
+        ${criteriaDistribution ? `
+        Plotly.newPlot('criteriaDistChart', [
+            {
               x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Level of Detail'],
               y: [${criteriaDistribution.map((c: any) => c.min).join(', ')}],
-              name: 'Minimum',
-              type: 'bar',
-              marker: {color: '#ef4444'}
-          },
-          {
+                name: 'Minimum',
+                type: 'bar',
+                marker: {color: '#ef4444'}
+            },
+            {
               x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Level of Detail'],
               y: [${criteriaDistribution.map((c: any) => c.avg).join(', ')}],
-              name: 'Average',
-              type: 'bar',
-              marker: {color: '#10b981'}
-          },
-          {
+                name: 'Average',
+                type: 'bar',
+                marker: {color: '#10b981'}
+            },
+            {
               x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Level of Detail'],
               y: [${criteriaDistribution.map((c: any) => c.max).join(', ')}],
-              name: 'Maximum',
-              type: 'bar',
-              marker: {color: '#f59e0b'}
-          }
-      ], {
-          ...darkLayout,
-          xaxis: {...darkLayout.xaxis, title: 'Criteria'},
-          yaxis: {...darkLayout.yaxis, title: 'Score', range: [0, 10]},
-          margin: {l: 60, r: 40, t: 40, b: 80},
-          barmode: 'group'
-      }, config);` : ''}
-      
-      ${criteriaTrend ? `
-      Plotly.newPlot('criteriaTrendChart', [
-          {
-              x: ${JSON.stringify(criteriaTrend.testLabels)},
-              y: ${JSON.stringify(criteriaTrend.criteria.helpfulness)},
-              name: 'Helpfulness',
-              type: 'scatter',
-              mode: 'lines+markers',
-              line: {color: '#10b981', width: 2},
-              hovertemplate: 'Helpfulness: %{y}/10<extra></extra>'
-          },
-          {
-              x: ${JSON.stringify(criteriaTrend.testLabels)},
-              y: ${JSON.stringify(criteriaTrend.criteria.relevance)},
-              name: 'Relevance',
-              type: 'scatter',
-              mode: 'lines+markers',
-              line: {color: '#f59e0b', width: 2},
-              hovertemplate: 'Relevance: %{y}/10<extra></extra>'
-          },
-          {
-              x: ${JSON.stringify(criteriaTrend.testLabels)},
-              y: ${JSON.stringify(criteriaTrend.criteria.accuracy)},
-              name: 'Accuracy',
-              type: 'scatter',
-              mode: 'lines+markers',
-              line: {color: '#8b5cf6', width: 2},
-              hovertemplate: 'Accuracy: %{y}/10<extra></extra>'
-          },
-          {
-              x: ${JSON.stringify(criteriaTrend.testLabels)},
-              y: ${JSON.stringify(criteriaTrend.criteria.depth)},
-              name: 'Depth',
-              type: 'scatter',
-              mode: 'lines+markers',
-              line: {color: '#ef4444', width: 2},
-              hovertemplate: 'Depth: %{y}/10<extra></extra>'
-          },
-          {
-              x: ${JSON.stringify(criteriaTrend.testLabels)},
-              y: ${JSON.stringify(criteriaTrend.criteria.levelOfDetail)},
-              name: 'Level of Detail',
-              type: 'scatter',
-              mode: 'lines+markers',
-              line: {color: '#84cc16', width: 2},
-              hovertemplate: 'Level of Detail: %{y}/10<extra></extra>'
-          }
-      ], {
-          ...darkLayout,
-          xaxis: {...darkLayout.xaxis, title: 'Test Sequence'},
-          yaxis: {...darkLayout.yaxis, title: 'Score', range: [0, 10]},
-          margin: {l: 60, r: 40, t: 40, b: 80},
-          legend: {font: {color: '#d1d5db'}, orientation: 'h', x: 0.5, xanchor: 'center', y: -0.2},
-          hovermode: 'x unified'
-      }, config);` : ''}
-      
+                name: 'Maximum',
+                type: 'bar',
+                marker: {color: '#f59e0b'}
+            }
+        ], {
+            ...darkLayout,
+            xaxis: {...darkLayout.xaxis, title: 'Criteria'},
+            yaxis: {...darkLayout.yaxis, title: 'Score', range: [0, 10]},
+            margin: {l: 60, r: 40, t: 40, b: 80},
+            barmode: 'group'
+        }, config);` : ''}
+        
+        ${criteriaTrend ? `
+        Plotly.newPlot('criteriaTrendChart', [
+            {
+                x: ${JSON.stringify(criteriaTrend.testLabels)},
+                y: ${JSON.stringify(criteriaTrend.criteria.helpfulness)},
+                name: 'Helpfulness',
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {color: '#10b981', width: 2},
+                hovertemplate: 'Helpfulness: %{y}/10<extra></extra>'
+            },
+            {
+                x: ${JSON.stringify(criteriaTrend.testLabels)},
+                y: ${JSON.stringify(criteriaTrend.criteria.relevance)},
+                name: 'Relevance',
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {color: '#f59e0b', width: 2},
+                hovertemplate: 'Relevance: %{y}/10<extra></extra>'
+            },
+            {
+                x: ${JSON.stringify(criteriaTrend.testLabels)},
+                y: ${JSON.stringify(criteriaTrend.criteria.accuracy)},
+                name: 'Accuracy',
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {color: '#8b5cf6', width: 2},
+                hovertemplate: 'Accuracy: %{y}/10<extra></extra>'
+            },
+            {
+                x: ${JSON.stringify(criteriaTrend.testLabels)},
+                y: ${JSON.stringify(criteriaTrend.criteria.depth)},
+                name: 'Depth',
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {color: '#ef4444', width: 2},
+                hovertemplate: 'Depth: %{y}/10<extra></extra>'
+            },
+            {
+                x: ${JSON.stringify(criteriaTrend.testLabels)},
+                y: ${JSON.stringify(criteriaTrend.criteria.levelOfDetail)},
+                name: 'Level of Detail',
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: {color: '#84cc16', width: 2},
+                hovertemplate: 'Level of Detail: %{y}/10<extra></extra>'
+            }
+        ], {
+            ...darkLayout,
+            xaxis: {...darkLayout.xaxis, title: 'Test Sequence'},
+            yaxis: {...darkLayout.yaxis, title: 'Score', range: [0, 10]},
+            margin: {l: 60, r: 40, t: 40, b: 80},
+            legend: {font: {color: '#d1d5db'}, orientation: 'h', x: 0.5, xanchor: 'center', y: -0.2},
+            hovermode: 'x unified'
+        }, config);` : ''}
+        
       // Funções para página de erros
-      function showErrorPage() {
-          document.getElementById('errorPage').classList.add('active');
-          ${errorStats ? `
-          Plotly.newPlot('errorChartPage', [{
-              x: ${JSON.stringify(errorStats.errorTypes)},
-              y: ${JSON.stringify(errorStats.errorCounts)},
-              customdata: ${JSON.stringify(errorStats.errorExamples)},
-              type: 'bar',
-              marker: {color: '#ef4444', line: {color: '#dc2626', width: 2}},
-              hovertemplate: '<b>%{x}</b><br>Count: %{y}<br><br><i>Example Error:</i><br>%{customdata}<extra></extra>',
-              hoverlabel: {bgcolor: '#1f2937', bordercolor: '#ef4444', font: {color: '#ffffff', size: 10}, namelength: -1}
-          }], {
-              ...darkLayout,
-              xaxis: {...darkLayout.xaxis, title: 'Error Types'},
-              yaxis: {...darkLayout.yaxis, title: 'Count'},
-              margin: {l: 60, r: 40, t: 40, b: 100}
-          }, config);` : ''}
-      }
-      
-      function hideErrorPage() {
-          document.getElementById('errorPage').classList.remove('active');
-      }
+        function showErrorPage() {
+            document.getElementById('errorPage').classList.add('active');
+            ${errorStats ? `
+            Plotly.newPlot('errorChartPage', [{
+                x: ${JSON.stringify(errorStats.errorTypes)},
+                y: ${JSON.stringify(errorStats.errorCounts)},
+                customdata: ${JSON.stringify(errorStats.errorExamples)},
+                type: 'bar',
+                marker: {color: '#ef4444', line: {color: '#dc2626', width: 2}},
+                hovertemplate: '<b>%{x}</b><br>Count: %{y}<br><br><i>Example Error:</i><br>%{customdata}<extra></extra>',
+                hoverlabel: {bgcolor: '#1f2937', bordercolor: '#ef4444', font: {color: '#ffffff', size: 10}, namelength: -1}
+            }], {
+                ...darkLayout,
+                xaxis: {...darkLayout.xaxis, title: 'Error Types'},
+                yaxis: {...darkLayout.yaxis, title: 'Count'},
+                margin: {l: 60, r: 40, t: 40, b: 100}
+            }, config);` : ''}
+        }
+        
+        function hideErrorPage() {
+            document.getElementById('errorPage').classList.remove('active');
+        }
       
       // Inicialização
       document.addEventListener('DOMContentLoaded', function() {

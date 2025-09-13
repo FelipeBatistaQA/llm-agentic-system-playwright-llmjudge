@@ -120,8 +120,19 @@ export class PlaywrightLogger {
             });
         }
 
-        this.testLogs.delete(testName);
         this.currentTestName = null;
+    }
+
+    static getAllTestLogs(): Map<string, { http: HttpLogEntry[]; llm: LlmLogEntry[]; judge: JudgeLogEntry[]; }> {
+        return new Map(this.testLogs);
+    }
+
+    static getLogsForTest(testName: string): { http: HttpLogEntry[]; llm: LlmLogEntry[]; judge: JudgeLogEntry[]; } | null {
+        return this.testLogs.get(testName) || null;
+    }
+
+    static clearAllLogs() {
+        this.testLogs.clear();
     }
 
     private static formatHttpLogs(entries: HttpLogEntry[]): string {

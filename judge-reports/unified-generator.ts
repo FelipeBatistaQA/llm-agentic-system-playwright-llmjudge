@@ -8,7 +8,7 @@ import { GeneratorOptions, ProcessedData } from './core/ReportData';
 
 
 export class UnifiedReportGenerator {
-  
+
   private processor: DataProcessor;
   private htmlGenerator: HTMLGenerator;
   private pngGenerator: PNGGenerator;
@@ -48,7 +48,7 @@ export class UnifiedReportGenerator {
     this.ensureOutputDir();
 
     console.log(`🚀 Generating ALL formats (HTML + PNG + PDF)...`);
-    
+
     // Generate all formats in parallel using the class properties
     const [htmlPath, pngPath, pdfPath] = await Promise.all([
       this.htmlGenerator.generate(data),
@@ -62,10 +62,10 @@ export class UnifiedReportGenerator {
     console.log(`   🖼️ PNG Report: ${pngPath}`);
     console.log(`   📄 PDF Report: ${pdfPath}`);
 
-    return { 
-      html: htmlPath, 
-      png: pngPath, 
-      pdf: pdfPath 
+    return {
+      html: htmlPath,
+      png: pngPath,
+      pdf: pdfPath
     };
   }
 

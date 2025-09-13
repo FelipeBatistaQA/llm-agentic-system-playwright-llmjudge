@@ -5,7 +5,7 @@ import { JudgeLogger } from '../../../logSystem/JudgeLogger';
 import { BaseAgent, PromptConfig } from '../base-agent';
 
 export class LlmJudge extends BaseAgent {
-  
+
   private readonly agent: Agent<unknown, typeof JudgeResultSchema>;
   private readonly client: OpenAI;
   private readonly promptConfig: PromptConfig;
@@ -43,12 +43,12 @@ export class LlmJudge extends BaseAgent {
         judgeResult.criteria.depth,
         judgeResult.criteria.levelOfDetail,
       ];
-      
+
       const calculatedRating = parseFloat(
         (criteriaValues.reduce((sum, value) => sum + value, 0) / criteriaValues.length).toFixed(1)
       );
 
-      JudgeLogger.logEvaluation('CONVERSATION_JUDGE', `Judge analysis of conversation with ${input.split('\n').length} lines`, calculatedRating, judgeResult.explanation, judgeResult.criteria);
+      //JudgeLogger.logEvaluation('CONVERSATION_JUDGE', `Judge analysis of conversation with ${input.split('\n').length} lines`, calculatedRating, judgeResult.explanation, judgeResult.criteria);
 
       return {
         ok: calculatedRating >= 8,
@@ -58,9 +58,9 @@ export class LlmJudge extends BaseAgent {
         criteria: judgeResult.criteria,
       };
     } catch (error: any) {
-      
+
       JudgeLogger.logJudgeError('JUDGE', input, error);
-      throw error; 
+      throw error;
     }
   }
 
@@ -91,7 +91,11 @@ export class LlmJudge extends BaseAgent {
 
     const input = `Analyze this conversation:\n${conversationText}\n\nPlease evaluate this conversation and return JSON with explanation and rating (1-10).`;
 
-    return this.judge(input);
+    const result = await this.judge(input);
+
+    JudgeLogger.logEvaluation(conversationText, result.explanation || '', result.rating, result.explanation || '', result.criteria);
+
+    return result;
   }
 }
 

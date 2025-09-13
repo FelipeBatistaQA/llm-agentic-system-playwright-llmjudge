@@ -1,3 +1,45 @@
+export interface HttpLogInfo {
+  timestamp: string;
+  method: string;
+  url: string;
+  status: number;
+  model?: string;
+  payload?: string;
+  response?: string;
+  tokens?: { total: number; prompt: number; completion: number };
+}
+
+export interface LlmLogInfo {
+  timestamp: string;
+  model: string;
+  prompt: string;
+  response: string;
+  tokens: { total: number; prompt: number; completion: number };
+  finishReason: string;
+}
+
+export interface JudgeLogInfo {
+  timestamp: string;
+  rating: number;
+  status: string;
+  question: string;
+  answer: string;
+  explanation: string;
+  criteria?: {
+    helpfulness: number;
+    relevance: number;
+    accuracy: number;
+    depth: number;
+    levelOfDetail: number;
+  };
+}
+
+export interface StructuredLogs {
+  http: HttpLogInfo[];
+  llm: LlmLogInfo[];
+  judge: JudgeLogInfo[];
+}
+
 export interface JudgeResult {
   timestamp: string;
   testName: string;
@@ -6,6 +48,7 @@ export interface JudgeResult {
   prompt: string;
   output: string;
   lineNumber?: number;
+  explanation?: string;
   criteria?: {
     helpfulness: number;
     relevance: number;
@@ -13,6 +56,7 @@ export interface JudgeResult {
     depth: number;
     levelOfDetail: number;
   };
+  logs?: StructuredLogs;
 }
 
 export interface ReportStats {
