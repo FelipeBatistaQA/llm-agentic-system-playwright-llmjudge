@@ -9,15 +9,15 @@ const program = new Command();
 program
   .name('llm-judge-reports')
   .description('LLM Judge System - Unified Report Generator')
-  .version('3.0.0');
+  .version('2.0.0');
 
 program
   .command('generate')
-  .description('Generate both PNG and HTML reports from CSV file')
+  .description('Generate ALL reports from CSV file (HTML + PNG + PDF)')
   .argument('<csv-file>', 'Path to CSV file')
-  .option('-o, --output <dir>', 'Output directory for reports', './chart-generator')
-  .option('-w, --width <number>', 'PNG report width in pixels', '1200')
-  .option('-h, --height <number>', 'PNG report height in pixels', '800')
+  .option('-o, --output <dir>', 'Output directory for reports', './judge-reports/reports')
+  .option('-w, --width <number>', 'PNG report width in pixels', '1800')
+  .option('-h, --height <number>', 'PNG report height in pixels', '3000')
   .action(async (csvFile: string, options) => {
     try {
       const generator = new UnifiedReportGenerator({
@@ -27,16 +27,17 @@ program
         height: parseInt(options.height)
       });
 
-      console.log(`📊 LLM Judge System - Report Generator`);
+      console.log(`📊 LLM Judge System - All Formats Report Generator`);
       console.log(`📁 Output directory: ${options.output}`);
-      console.log(``);
+      console.log(`🎯 Formats: HTML + PNG + PDF\n`);
       
-      await generator.generateReports();
+      const results = await generator.generateReports();
       
-      console.log(``);
-      console.log(`🎉 Reports ready!`);
-      console.log(`   🖼️ PNG Report: Open the PNG file for static view`);
-      console.log(`   🌐 HTML Report: Open the HTML file in browser for interactive charts`);
+      console.log(`\n🎉 All reports ready!`);
+      console.log(`   🌐 HTML Report: Open in browser for interactive charts`);
+      console.log(`   🖼️ PNG Report: High-resolution static report`);
+      console.log(`   📄 PDF Report: Professional document ready for printing`);
+      
     } catch (error) {
       console.error('❌ Error generating reports:', error);
       process.exit(1);

@@ -9,3 +9,4 @@ node_modules/
 
 logsystem/logs/
 /chart-generator/llm_judge_dashboard.png
+/judge-reports/reports/
