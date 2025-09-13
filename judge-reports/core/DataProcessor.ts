@@ -27,13 +27,12 @@ export class DataProcessor {
           };
           
           // Adicionar critérios se disponíveis
-          if (row.helpfulness || row.relevance || row.accuracy || row.depth || row.creativity || row.level_of_detail) {
+          if (row.helpfulness || row.relevance || row.accuracy || row.depth || row.level_of_detail) {
             result.criteria = {
               helpfulness: parseInt(row.helpfulness) || 0,
               relevance: parseInt(row.relevance) || 0,
               accuracy: parseInt(row.accuracy) || 0,
               depth: parseInt(row.depth) || 0,
-              creativity: parseInt(row.creativity) || 0,
               levelOfDetail: parseInt(row.level_of_detail) || 0,
             };
           }
@@ -124,7 +123,6 @@ export class DataProcessor {
         totals.relevance += item.criteria.relevance;
         totals.accuracy += item.criteria.accuracy;
         totals.depth += item.criteria.depth;
-        totals.creativity += item.criteria.creativity;
         totals.levelOfDetail += item.criteria.levelOfDetail;
       }
     });
@@ -135,7 +133,6 @@ export class DataProcessor {
       relevance: (totals.relevance / count).toFixed(1),
       accuracy: (totals.accuracy / count).toFixed(1),
       depth: (totals.depth / count).toFixed(1),
-      creativity: (totals.creativity / count).toFixed(1),
       levelOfDetail: (totals.levelOfDetail / count).toFixed(1)
     };
   }
@@ -144,7 +141,7 @@ export class DataProcessor {
     const dataWithCriteria = this.data.filter(item => item.criteria);
     if (dataWithCriteria.length === 0) return null;
     
-    const criteriaNames = ['helpfulness', 'relevance', 'accuracy', 'depth', 'creativity', 'levelOfDetail'];
+    const criteriaNames = ['helpfulness', 'relevance', 'accuracy', 'depth', 'levelOfDetail'];
     const distribution = criteriaNames.map(criteriaName => {
       const values = dataWithCriteria.map(item => item.criteria![criteriaName as keyof typeof item.criteria]);
       const min = Math.min(...values);
@@ -156,7 +153,6 @@ export class DataProcessor {
         relevance: 'Relevance', 
         accuracy: 'Accuracy',
         depth: 'Depth',
-        creativity: 'Creativity',
         levelOfDetail: 'Level of Detail'
       };
       
@@ -185,7 +181,6 @@ export class DataProcessor {
       relevance: recent.map(item => item.criteria!.relevance),
       accuracy: recent.map(item => item.criteria!.accuracy),
       depth: recent.map(item => item.criteria!.depth),
-      creativity: recent.map(item => item.criteria!.creativity),
       levelOfDetail: recent.map(item => item.criteria!.levelOfDetail)
     };
     

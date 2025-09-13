@@ -11,7 +11,6 @@ export interface JudgeResult {
     relevance: number;
     accuracy: number;
     depth: number;
-    creativity: number;
     levelOfDetail: number;
   };
 }
@@ -30,7 +29,6 @@ export interface CriteriaAverages {
   relevance: string;
   accuracy: string;
   depth: string;
-  creativity: string;
   levelOfDetail: string;
 }
 
@@ -49,7 +47,6 @@ export interface CriteriaTrend {
     relevance: number[];
     accuracy: number[];
     depth: number[];
-    creativity: number[];
     levelOfDetail: number[];
   };
 }

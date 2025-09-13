@@ -32,7 +32,6 @@ interface JudgeLogEntry {
         relevance: number;
         accuracy: number;
         depth: number;
-        creativity: number;
         levelOfDetail: number;
     };
 }
@@ -188,7 +187,6 @@ ${JSON.stringify(entry.response, null, 2).split('\n').map(line => `║ ${line}`)
 ║ • Relevance: ${entry.criteria.relevance}/10
 ║ • Accuracy: ${entry.criteria.accuracy}/10
 ║ • Depth: ${entry.criteria.depth}/10
-║ • Creativity: ${entry.criteria.creativity}/10
 ║ • Level of Detail: ${entry.criteria.levelOfDetail}/10
 `;
             }

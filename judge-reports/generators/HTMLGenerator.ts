@@ -87,8 +87,8 @@ export class HTMLGenerator extends BaseGenerator {
         ${criteriaAverages ? `
         Plotly.newPlot('criteriaChart', [{
             type: 'scatterpolar',
-            r: [${criteriaAverages.helpfulness}, ${criteriaAverages.relevance}, ${criteriaAverages.accuracy}, ${criteriaAverages.depth}, ${criteriaAverages.creativity}, ${criteriaAverages.levelOfDetail}],
-            theta: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Creativity', 'Level of Detail'],
+            r: [${criteriaAverages.helpfulness}, ${criteriaAverages.relevance}, ${criteriaAverages.accuracy}, ${criteriaAverages.depth}, ${criteriaAverages.levelOfDetail}],
+            theta: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Level of Detail'],
             fill: 'toself',
             fillcolor: 'rgba(16, 185, 129, 0.2)',
             line: { color: '#10b981', width: 3 },
@@ -114,8 +114,8 @@ export class HTMLGenerator extends BaseGenerator {
         
         ${criteriaAverages ? `
         Plotly.newPlot('criteriaBarChart', [{
-            x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Creativity', 'Level of Detail'],
-            y: [${criteriaAverages.helpfulness}, ${criteriaAverages.relevance}, ${criteriaAverages.accuracy}, ${criteriaAverages.depth}, ${criteriaAverages.creativity}, ${criteriaAverages.levelOfDetail}],
+            x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Level of Detail'],
+            y: [${criteriaAverages.helpfulness}, ${criteriaAverages.relevance}, ${criteriaAverages.accuracy}, ${criteriaAverages.depth}, ${criteriaAverages.levelOfDetail}],
             type: 'bar',
             marker: {color: '#8b5cf6', line: {color: '#7c3aed', width: 2}},
             hovertemplate: '%{x}: %{y}/10<extra></extra>'
@@ -129,21 +129,21 @@ export class HTMLGenerator extends BaseGenerator {
         ${criteriaDistribution ? `
         Plotly.newPlot('criteriaDistChart', [
             {
-                x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Creativity', 'Level of Detail'],
+                x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Level of Detail'],
                 y: [${criteriaDistribution.map(c => c.min).join(', ')}],
                 name: 'Minimum',
                 type: 'bar',
                 marker: {color: '#ef4444'}
             },
             {
-                x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Creativity', 'Level of Detail'],
+                x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Level of Detail'],
                 y: [${criteriaDistribution.map(c => c.avg).join(', ')}],
                 name: 'Average',
                 type: 'bar',
                 marker: {color: '#10b981'}
             },
             {
-                x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Creativity', 'Level of Detail'],
+                x: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Level of Detail'],
                 y: [${criteriaDistribution.map(c => c.max).join(', ')}],
                 name: 'Maximum',
                 type: 'bar',
@@ -194,15 +194,6 @@ export class HTMLGenerator extends BaseGenerator {
                 mode: 'lines+markers',
                 line: {color: '#ef4444', width: 2},
                 hovertemplate: 'Depth: %{y}/10<extra></extra>'
-            },
-            {
-                x: ${JSON.stringify(criteriaTrend.testLabels)},
-                y: ${JSON.stringify(criteriaTrend.criteria.creativity)},
-                name: 'Creativity',
-                type: 'scatter',
-                mode: 'lines+markers',
-                line: {color: '#06b6d4', width: 2},
-                hovertemplate: 'Creativity: %{y}/10<extra></extra>'
             },
             {
                 x: ${JSON.stringify(criteriaTrend.testLabels)},

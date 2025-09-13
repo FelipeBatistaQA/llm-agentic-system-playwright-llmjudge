@@ -10,7 +10,6 @@ export const JudgeResultSchema = z.object({
     relevance: z.number().int().min(1).max(10),
     accuracy: z.number().int().min(1).max(10),
     depth: z.number().int().min(1).max(10),
-    creativity: z.number().int().min(1).max(10),
     levelOfDetail: z.number().int().min(1).max(10),
   }),
   testedItem: z.object({
@@ -40,7 +39,6 @@ export interface LlmJudgeResult {
     relevance: number;
     accuracy: number;
     depth: number;
-    creativity: number;
     levelOfDetail: number;
   };
   testedItem?: {

@@ -30,7 +30,6 @@ export class JudgeLogger {
         relevance: number;
         accuracy: number;
         depth: number;
-        creativity: number;
         levelOfDetail: number;
     }) {
         const timestamp = new Date().toISOString();
@@ -42,7 +41,7 @@ export class JudgeLogger {
         console.log(`│ Rating: ${rating}/10 | Status: ${status}${' '.repeat(Math.max(0, 51 - rating.toString().length - status.length))} │`);
         console.log(`│ Question: ${this.truncate(prompt, 57)}${' '.repeat(Math.max(0, 57 - Math.min(57, prompt.length)))} │`);
         if (criteria) {
-            console.log(`│ Criteria: H:${criteria.helpfulness} R:${criteria.relevance} A:${criteria.accuracy} D:${criteria.depth} C:${criteria.creativity} LoD:${criteria.levelOfDetail}${' '.repeat(Math.max(0, 42 - `H:${criteria.helpfulness} R:${criteria.relevance} A:${criteria.accuracy} D:${criteria.depth} C:${criteria.creativity} LoD:${criteria.levelOfDetail}`.length))} │`);
+            console.log(`│ Criteria: H:${criteria.helpfulness} R:${criteria.relevance} A:${criteria.accuracy} D:${criteria.depth} LoD:${criteria.levelOfDetail}${' '.repeat(Math.max(0, 50 - `H:${criteria.helpfulness} R:${criteria.relevance} A:${criteria.accuracy} D:${criteria.depth} LoD:${criteria.levelOfDetail}`.length))} │`);
         }
         console.log('└────────────────────────────────────────────────────────────────────────┘');
         console.log('');
@@ -63,7 +62,6 @@ export class JudgeLogger {
 [${timestamp}] [JUDGE]   • Relevance: ${criteria.relevance}/10
 [${timestamp}] [JUDGE]   • Accuracy: ${criteria.accuracy}/10
 [${timestamp}] [JUDGE]   • Depth: ${criteria.depth}/10
-[${timestamp}] [JUDGE]   • Creativity: ${criteria.creativity}/10
 [${timestamp}] [JUDGE]   • Level of Detail: ${criteria.levelOfDetail}/10
 ` : '';
 

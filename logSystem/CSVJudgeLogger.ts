@@ -13,7 +13,6 @@ interface CSVJudgeEntry {
         relevance: number;
         accuracy: number;
         depth: number;
-        creativity: number;
         levelOfDetail: number;
     };
 }
@@ -37,13 +36,13 @@ export class CSVJudgeLogger {
         
         try {
             if (!fs.existsSync(this.csvFile)) {
-                const header = 'timestamp,test_name,rating,status,prompt,output,helpfulness,relevance,accuracy,depth,creativity,level_of_detail';
+                const header = 'timestamp,test_name,rating,status,prompt,output,helpfulness,relevance,accuracy,depth,level_of_detail';
                 fs.writeFileSync(this.csvFile, header + '\n', 'utf8');
                 console.log(`[CSV] Created new file: ${this.csvFile}`);
             } else {
                 const content = fs.readFileSync(this.csvFile, 'utf8');
                 if (!content.includes('timestamp,test_name,rating')) {
-                    const header = 'timestamp,test_name,rating,status,prompt,output,helpfulness,relevance,accuracy,depth,creativity,level_of_detail';
+                    const header = 'timestamp,test_name,rating,status,prompt,output,helpfulness,relevance,accuracy,depth,level_of_detail';
                     fs.writeFileSync(this.csvFile, header + '\n', 'utf8');
                     console.log(`[CSV] Fixed header in: ${this.csvFile}`);
                 }
@@ -68,14 +67,13 @@ export class CSVJudgeLogger {
                 entry.criteria?.relevance || '',
                 entry.criteria?.accuracy || '',
                 entry.criteria?.depth || '',
-                entry.criteria?.creativity || '',
                 entry.criteria?.levelOfDetail || ''
             ].join(',');
             
             fs.appendFileSync(this.csvFile, csvRow + '\n', 'utf8');
             
             const criteriaText = entry.criteria ? 
-                `[H:${entry.criteria.helpfulness} R:${entry.criteria.relevance} A:${entry.criteria.accuracy} D:${entry.criteria.depth} C:${entry.criteria.creativity} LoD:${entry.criteria.levelOfDetail}]` : '';
+                `[H:${entry.criteria.helpfulness} R:${entry.criteria.relevance} A:${entry.criteria.accuracy} D:${entry.criteria.depth} LoD:${entry.criteria.levelOfDetail}]` : '';
             
             console.log(`[CSV] Added: ${entry.testName} - ${entry.rating}/10 ${criteriaText}`);
         } catch (error: any) {

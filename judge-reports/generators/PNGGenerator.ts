@@ -298,7 +298,7 @@ export class PNGGenerator extends BaseGenerator {
     return {
       type: 'bar',
       data: {
-        labels: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Creativity', 'Level of Detail'],
+        labels: ['Helpfulness', 'Relevance', 'Accuracy', 'Depth', 'Level of Detail'],
         datasets: [{ 
           label: 'Average Score', 
           data: [
@@ -306,7 +306,6 @@ export class PNGGenerator extends BaseGenerator {
             parseFloat(criteriaAverages.relevance),
             parseFloat(criteriaAverages.accuracy),
             parseFloat(criteriaAverages.depth),
-            parseFloat(criteriaAverages.creativity),
             parseFloat(criteriaAverages.levelOfDetail)
           ],
           backgroundColor: '#8b5cf6', 

@@ -35,18 +35,17 @@ export class LlmJudge extends BaseAgent {
 
       const judgeResult = result.finalOutput as JudgeResult;
 
-      // Calculate rating as rounded average of criteria scores
+      // Calculate rating as average of criteria scores with 1 decimal place
       const criteriaValues = [
         judgeResult.criteria.helpfulness,
         judgeResult.criteria.relevance,
         judgeResult.criteria.accuracy,
         judgeResult.criteria.depth,
-        judgeResult.criteria.creativity,
         judgeResult.criteria.levelOfDetail,
       ];
       
-      const calculatedRating = Math.round(
-        criteriaValues.reduce((sum, value) => sum + value, 0) / criteriaValues.length
+      const calculatedRating = parseFloat(
+        (criteriaValues.reduce((sum, value) => sum + value, 0) / criteriaValues.length).toFixed(1)
       );
 
       JudgeLogger.logEvaluation('CONVERSATION_JUDGE', `Judge analysis of conversation with ${input.split('\n').length} lines`, calculatedRating, judgeResult.explanation, judgeResult.criteria);
