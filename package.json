@@ -8,6 +8,7 @@
     "reports": "ts-node judge-reports/index.ts generate logSystem/logs/judge_results.csv --output judge-reports/reports"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.1",
     "@openai/agents": "^0.0.17",
     "@xenova/transformers": "^2.15.0",
     "canvas": "^3.2.0",
