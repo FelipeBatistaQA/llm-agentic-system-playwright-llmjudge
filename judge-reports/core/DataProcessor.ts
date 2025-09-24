@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import csv from 'csv-parser';
-import { JudgeResult, ReportStats, CriteriaAverages, CriteriaDistribution, CriteriaTrend, ErrorStats, ProcessedData, RatingGroup, StructuredLogs, HttpLogInfo, LlmLogInfo, JudgeLogInfo } from './ReportData';
+import { JudgeResult, ReportStats, CriteriaAverages, CriteriaDistribution, CriteriaTrend, ErrorStats, ProcessedData, RatingGroup, StructuredLogs, HttpLogInfo, LlmLogInfo, JudgeLogInfo, ConversationEntry } from './ReportData';
 
 export class DataProcessor {
   private data: JudgeResult[] = [];
@@ -394,6 +394,15 @@ export class DataProcessor {
     return content.replace(/^║\s*/, '').replace(/\n║\s*/g, '\n').trim();
   }
 
+  private extractConversationEntries(logs: StructuredLogs): ConversationEntry[] {
+    return logs.llm.map(log => ({
+      userMessage: this.extractUserPrompt(log.prompt),
+      assistantResponse: this.cleanLogContent(log.response),
+      timestamp: log.timestamp,
+      tokens: log.tokens
+    }));
+  }
+
   private parseAttachmentContent(attachments: any[], attachmentName: string, type: 'http' | 'llm' | 'judge'): any[] {
     try {
       console.log(`[DEBUG] Looking for attachment: ${attachmentName}`);
@@ -538,7 +547,7 @@ export class DataProcessor {
       
       const questionMatch = section.match(/── QUESTION ──\s*([^\n]*)/);
       const answerMatch = section.match(/── ANSWER ──\s*([\s\S]*?)(?=── CRITERIA|── EXPLANATION|╚)/);
-      const explanationMatch = section.match(/── EXPLANATION ──\s*([\s\S]*?)(?=╚)/);
+      const explanationMatch = section.match(/── EXPLANATION ──\s*([\s\S]*?)(?=╚════════════|$)/);
       
       const criteriaMatch = section.match(/── CRITERIA SCORES ──\s*([\s\S]*?)(?=── EXPLANATION)/);
       let criteria: { helpfulness: number; relevance: number; accuracy: number; depth: number; levelOfDetail: number; } | undefined = undefined;
@@ -713,12 +722,13 @@ export class DataProcessor {
       console.log(`[DEBUG] Test ${item.testName} detected as ${testType}`);
       
       if (testType === 'conversation') {
-        // CASO 2: Extrair dados dos logs para testes de conversação
+        // CASE 2: Extract data from logs for conversation tests
         return {
           ...item,
-          prompt: this.extractConversationFromLogs(logs),
-          output: this.extractFinalResponseFromLogs(logs),
+          prompt: `Conversation with ${logs.llm.length} interactions`,
+          output: `Conversation evaluated with ${logs.llm.length} interactions - see complete details in Prompt and Judge tabs`,
           explanation: this.extractExplanationFromLogs(logs, item.explanation || ''),
+          conversationEntries: this.extractConversationEntries(logs),
           logs
         };
       } else {

@@ -9,7 +9,8 @@
     "start": "node dist/main.js",
     "start:dev": "ts-node-dev --respawn --transpile-only src/main.ts",
     "test": "playwright test",
-    "reports": "ts-node judge-reports/index.ts generate logSystem/logs/judge_results.csv --output judge-reports/reports"
+    "reports": "ts-node judge-reports/index.ts generate logSystem/logs/judge_results.csv --output judge-reports/reports",
+    "test-analytics": "ts-node agentic-system/agents/ai-analitycs-report/example-usage.ts"
   },
   "dependencies": {
     "@openai/agents": "^0.0.17",

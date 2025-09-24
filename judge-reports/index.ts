@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 
+import dotenv from 'dotenv';
+import * as path from 'path';
+
+// Carregar variáveis de ambiente do arquivo .env
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
 import { Command } from 'commander';
 import { UnifiedReportGenerator } from './unified-generator';
-import * as path from 'path';
 
 const program = new Command();
 

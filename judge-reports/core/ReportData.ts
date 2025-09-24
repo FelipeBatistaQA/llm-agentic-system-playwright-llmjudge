@@ -34,6 +34,13 @@ export interface JudgeLogInfo {
   };
 }
 
+export interface ConversationEntry {
+  userMessage: string;
+  assistantResponse: string;
+  timestamp: string;
+  tokens: { prompt: number; completion: number; total: number };
+}
+
 export interface StructuredLogs {
   http: HttpLogInfo[];
   llm: LlmLogInfo[];
@@ -57,6 +64,7 @@ export interface JudgeResult {
     levelOfDetail: number;
   };
   logs?: StructuredLogs;
+  conversationEntries?: ConversationEntry[];
 }
 
 export interface ReportStats {
@@ -119,6 +127,37 @@ export interface RatingGroup {
   tests: JudgeResult[];
 }
 
+export interface AIAnalyticsData {
+  anomalies: {
+    hasAnomalies: boolean;
+    anomalies: Array<{
+      type: string;
+      severity: 'low' | 'medium' | 'high';
+      title: string;
+      description: string;
+      evidence: string[];
+      recommendation: string;
+      affectedTests: string[] | null;
+    }>;
+    overallRisk: 'low' | 'medium' | 'high';
+    confidence: number;
+  };
+  summary: {
+    overallAssessment: 'excellent' | 'good' | 'concerning' | 'poor';
+    executiveSummary: string;
+    keyFindings: string[];
+    performanceHighlights: string[];
+    areasOfConcern: string[];
+    recommendations: string[];
+    confidence: number;
+  };
+  metadata: {
+    analysisDate: string;
+    csvPath: string;
+    processingTime: number;
+  };
+}
+
 export interface ProcessedData {
   stats: ReportStats;
   ratingCounts: number[];
@@ -134,6 +173,8 @@ export interface ProcessedData {
   errorStats: ErrorStats | null;
   ratingGroups?: RatingGroup[];
   testDetails?: JudgeResult[];
+  // Nova seção AI Analytics
+  aiAnalytics?: AIAnalyticsData;
 }
 
 export interface GeneratorOptions {

@@ -8,6 +8,7 @@ This project combines **agentic test automation** with **semantic validation** t
 ### Key Innovation
 - **Agentic Test Generation**: AI agents create dynamic test scenarios, scaling from dozens to thousands of tests
 - **Non-Deterministic Validation**: Semantic similarity and LLM judge evaluation for AI response quality
+- **AI-Powered Analytics**: Multi-agent report generation with executive summaries and intelligent anomaly detection
 - **Modern Integration**: Built on Playwright with comprehensive logging and OpenAI dashboard integration
 
 ## Architecture
@@ -56,6 +57,13 @@ Multi-modal validation across four distinct approaches:
 - **Judge Evaluation**: Quality assessment with expected results
 - **Semantic Analysis**: Deep meaning preservation validation
 
+### 📈 Enhanced Report Generation
+AI-powered comprehensive reports with intelligent analytics and anomaly detection:
+- **Multi-Format Output**: HTML (interactive), PNG (static), PDF (professional)
+- **Executive Summaries**: Humanized AI-generated insights and assessments
+- **Anomaly Detection**: Multi-agent validation system for mathematical and statistical inconsistencies
+- **Performance Analytics**: Automated trend analysis and quality metrics visualization
+
 ## Integration with Modern Test Automation
 
 ### Playwright Foundation
@@ -79,6 +87,102 @@ Comprehensive usage monitoring and analytics:
 - **Model Performance**: Response times and success rates
 - **Cost Analytics**: Spend tracking across different models
 - **Request Patterns**: Usage trends and peak analysis
+
+## Enhanced Report Generation System
+
+### AI-Powered Analytics Reports
+
+The framework includes a sophisticated report generation system that transforms raw test data into comprehensive, professional reports with AI-driven insights and anomaly detection.
+
+#### Multi-Format Report Output
+```bash
+# Generate comprehensive reports
+npm run reports
+
+# Output formats:
+# → HTML Report: Interactive charts and AI insights
+# → PNG Report: High-resolution static visualization  
+# → PDF Report: Professional document for stakeholders
+```
+
+#### AI Analytics Integration
+
+**Executive Summary Generation**:
+The system uses specialized AI agents to analyze test results and generate humanized executive summaries:
+
+```typescript
+// Generated executive summary example:
+"The LLM test run achieved a perfect success rate of 100.0% with an 
+impressive average rating of 9.50/10. Notably, 50.0% of the tests 
+received a rating of 9.6, indicating strong consistency in performance."
+```
+
+**Performance Assessment Categories**:
+- **Excellent** (9.0-10.0): Perfect system performance
+- **Good** (7.0-8.9): Solid performance with minor issues
+- **Concerning** (5.0-6.9): Performance issues requiring attention  
+- **Poor** (<5.0): Critical issues requiring immediate action
+
+#### Intelligent Anomaly Detection
+
+**Multi-Agent Validation System**:
+```
+Detector Agent → Identifies potential anomalies in test data
+       ↓
+Handoff Process → Transfers context via OpenAI Agent SDK
+       ↓  
+Validator Agent → Confirms or rejects anomalies with explanations
+       ↓
+Final Report → Shows validated anomalies and validation process
+```
+
+**Anomaly Types Detected**:
+- **Mathematical Inconsistencies**: Rating vs criteria average discrepancies (≥0.2 difference)
+- **Statistical Outliers**: Unusual performance patterns or extreme deviations
+- **Data Quality Issues**: Invalid entries, timestamp duplicates, out-of-range values
+- **Temporal Anomalies**: Time-based inconsistencies and pattern breaks
+
+**Validation Process**:
+```typescript
+// Example validation decision:
+{
+  "potentialAnomaly": "geography-question-test",
+  "decision": "REJECTED", 
+  "reason": "Perfect calculation, no error detected",
+  "mathematicalCheck": "Expected Rating = (9 + 6 + 10 + 8 + 9) / 5 = 8.4; Actual Rating = 8.8; Difference = 0.4",
+  "confidence": 8
+}
+```
+
+#### Report Features
+
+**Interactive Dashboard**:
+- **Statistical Overview**: Success rates, average ratings, performance ranges
+- **Visual Analytics**: Distribution charts, trend analysis, criteria breakdowns
+- **Anomaly Insights**: Clickable anomaly button with detailed validation logs
+- **AI Analysis Dropdown**: Expandable insights with key findings and recommendations
+
+**LLM Judge Metrics Integration**:
+- **Rating Distribution**: Visual breakdown of 1-10 rating scale results
+- **Criteria Analysis**: Helpfulness, relevance, accuracy, depth, level of detail
+- **Performance Trends**: Time-series analysis of test quality over time
+- **Quality Metrics**: Pass/fail ratios and threshold analysis
+
+**Report Generation Command**:
+```bash
+# Generate all formats from judge results
+npm run reports
+
+# Console output example:
+📊 LLM Judge System - All Formats Report Generator
+🚀 Loading data from: logSystem/logs/judge_results.csv
+📈 Loaded 150 valid records | ❌ Found 2 errors
+🤖 Running AI Analytics...
+🔍 Analyzing anomalies...
+🔄 Handoff to validator for validation...
+✅ Analysis completed successfully
+📄 Enhanced reports generated successfully!
+```
 
 ## Non-Deterministic Testing Approach
 
@@ -133,6 +237,23 @@ npx playwright test tests/semantic-similarity.spec.ts   # Semantic validation
 npx playwright show-report
 ```
 
+### Generating Enhanced Reports
+```bash
+# Generate AI-powered comprehensive reports with anomaly detection
+npm run reports
+
+# Output files created:
+# → judge-reports/reports/llm_judge_report.html  # Interactive dashboard
+# → judge-reports/reports/llm_judge_report.png   # Static visualization
+# → judge-reports/reports/llm_judge_report.pdf   # Professional document
+
+# Reports include:
+# ✓ AI-generated executive summaries
+# ✓ Anomaly detection with validation logs  
+# ✓ Statistical analysis and trend visualization
+# ✓ LLM Judge metrics integration
+```
+
 ### Project Structure
 ```typescript
 // Basic usage example
@@ -168,6 +289,9 @@ test('AI feature validation', async ({ request }) => {
 - **Progressive Conversations**: Context-aware multi-turn interactions
 
 ### 📈 Comprehensive Analytics
+- **AI-Generated Reports**: Executive summaries with humanized insights and assessments
+- **Multi-Agent Analysis**: Intelligent anomaly detection with validation explanations
+- **Multi-Format Output**: Interactive HTML, static PNG, and professional PDF reports
 - **CSV Export**: Large-scale evaluation data for trend analysis
 - **OpenAI Integration**: Real-time usage and cost monitoring
 - **Performance Metrics**: Token usage, response times, success rates
@@ -185,19 +309,25 @@ test('AI feature validation', async ({ request }) => {
 ## Use Cases
 
 ### AI Feature Testing
-- **Chatbot Quality**: Validate conversational AI responses
-- **Content Generation**: Ensure AI-generated content meets standards
-- **Recommendation Systems**: Test AI recommendation accuracy
+- **Chatbot Quality**: Validate conversational AI responses with automated reports
+- **Content Generation**: Ensure AI-generated content meets standards with executive summaries
+- **Recommendation Systems**: Test AI recommendation accuracy with anomaly detection
 
 ### Regression Testing
-- **Model Updates**: Detect performance changes across model versions
-- **Prompt Engineering**: Validate prompt modifications impact
-- **Semantic Drift**: Monitor meaning preservation over time
+- **Model Updates**: Detect performance changes across model versions with trend analysis
+- **Prompt Engineering**: Validate prompt modifications impact through comprehensive analytics
+- **Semantic Drift**: Monitor meaning preservation over time with AI-powered insights
 
 ### Large-Scale Validation
-- **Batch Processing**: Test thousands of scenarios automatically
-- **Quality Assurance**: Comprehensive AI system validation
-- **Performance Monitoring**: Track AI system health and metrics
+- **Batch Processing**: Test thousands of scenarios automatically with intelligent report generation
+- **Quality Assurance**: Comprehensive AI system validation with multi-agent anomaly detection
+- **Performance Monitoring**: Track AI system health and metrics with professional dashboard reports
+
+### Business Intelligence & Reporting
+- **Executive Dashboards**: AI-generated summaries for stakeholder reporting
+- **Quality Metrics**: Statistical analysis with visual charts and trends
+- **Anomaly Monitoring**: Automated detection of system issues with validation explanations
+- **Performance Insights**: Multi-format reports for different audiences (technical/business)
 
 ## Integration Examples
 
@@ -222,6 +352,28 @@ test.describe('AI-Enhanced Features', () => {
 });
 ```
 
+### Enhanced Reports Workflow
+```bash
+# Complete testing and reporting workflow
+
+# 1. Run your LLM tests
+npx playwright test
+
+# 2. Generate AI-powered comprehensive reports
+npm run reports
+
+# Reports automatically generated include:
+# → HTML Report: Interactive dashboard with anomaly detection
+# → PNG Report: High-resolution static visualization
+# → PDF Report: Professional document for stakeholders
+# → CSV Data: Structured results in logSystem/logs/judge_results.csv
+
+# 3. View results
+# - Open HTML report in browser for interactive analysis
+# - Share PDF reports with stakeholders
+# - Use CSV data for custom analytics
+```
+
 ### CI/CD Integration
 ```yaml
 # GitHub Actions example
@@ -230,19 +382,27 @@ test.describe('AI-Enhanced Features', () => {
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
   run: npx playwright test
     
+- name: Generate AI Reports
+  env:
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  run: npm run reports
+    
 - name: Upload Test Results
   uses: actions/upload-artifact@v3
   with:
     name: ai-test-results
     path: |
       playwright-report/
+      judge-reports/reports/
       logSystem/logs/judge_results.csv
 ```
 
 ## Benefits
 
 - **🎯 Quality Assurance**: Multi-layered validation ensures AI feature reliability
-- **📊 Data-Driven**: CSV export enables large-scale analysis and insights  
+- **📊 AI-Powered Reports**: Automated executive summaries and anomaly detection with professional multi-format output
+- **🤖 Intelligent Analysis**: Multi-agent validation system provides detailed insights and mathematical verification
+- **📈 Data-Driven**: CSV export enables large-scale analysis and insights  
 - **🔧 Developer-Friendly**: Seamless integration with modern testing workflows
 - **💰 Cost-Effective**: Efficient token usage with detailed monitoring
 - **🚀 Scalable**: From prototype to production-scale AI testing

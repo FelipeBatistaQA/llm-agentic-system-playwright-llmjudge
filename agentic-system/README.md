@@ -4,7 +4,7 @@ A modular agent management system built on the @openai/agents SDK for LLM testin
 
 ## Overview
 
-This system provides a structured approach to creating and managing AI agents with shared tools and consistent interfaces. It features inheritance-based architecture with a base agent class and specialized agent implementations for LLM evaluation and human interaction simulation.
+This system provides a structured approach to creating and managing AI agents with shared tools and consistent interfaces. It features inheritance-based architecture with a base agent class and specialized agent implementations for LLM evaluation, human interaction simulation, and comprehensive test analytics with intelligent anomaly detection.
 
 ## Architecture
 
@@ -19,11 +19,20 @@ agentic-system/
 │   │   └── config/
 │   │       ├── prompts.json  # Single message evaluation prompts
 │   │       └── conversation-prompts.json # Conversation evaluation prompts
-│   └── history-enthusiast/   # Human interaction simulation agent
-│       ├── history-agent.ts  # Main enthusiast implementation
-│       ├── types.ts          # Type definitions
+│   ├── history-enthusiast/   # Human interaction simulation agent
+│   │   ├── history-agent.ts  # Main enthusiast implementation
+│   │   ├── types.ts          # Type definitions
+│   │   └── config/
+│   │       └── prompts.json  # Question generation prompts
+│   └── ai-analitycs-report/  # AI analytics and anomaly detection
+│       ├── anomaly-detector-agent.ts # Multi-agent anomaly detection
+│       ├── csv-data-processor.ts # Test data processing
+│       ├── sumarry-reporter-agent.ts # Executive summary generation
+│       ├── types.ts          # Type definitions and schemas
 │       └── config/
-│           └── prompts.json  # Question generation prompts
+│           ├── anomaly-detector-prompts.json # Anomaly detection rules
+│           ├── anomaly-validator-prompts.json # Validation criteria
+│           └── summary-reporter-prompts.json # Summary generation
 ├── tools/                    # Shared tools for agents
 │   └── chatgpt-tool.ts      # ChatGPT REST API interface
 └── index.ts                 # Main exports
@@ -148,6 +157,93 @@ const result = await enthusiast.generateQuestionSequence('Arctic Geography');
 - Requires HttpHandler for ChatGPT tool access
 - Structured output validation with Zod schemas
 
+### AI Analytics Report Agent
+
+**Purpose**: Comprehensive analysis of LLM test run results with intelligent anomaly detection through multi-agent validation system.
+
+**Key Features**:
+- Automated CSV test data processing and statistical analysis
+- Multi-agent anomaly detection with handoff architecture
+- Mathematical validation of rating calculations
+- Statistical outlier and data quality analysis
+- Executive summary generation with AI insights
+- Validation decision logging with detailed explanations
+
+**Anomaly Detection Types**:
+- **Mathematical Inconsistencies**: Rating vs criteria average discrepancies
+- **Statistical Outliers**: Unusual performance patterns or distributions
+- **Data Quality Issues**: Invalid entries, timestamp duplicates, range violations
+- **Temporal Anomalies**: Time-based pattern inconsistencies
+
+**Multi-Agent Architecture**:
+```typescript
+// Detector Agent → identifies potential anomalies
+// Handoff via OpenAI SDK → transfers validation context
+// Validator Agent → confirms or rejects anomalies with explanations
+```
+
+**Usage**:
+```typescript
+import { AiAnalyticsReport } from './agentic-system';
+
+const analytics = new AiAnalyticsReport({
+  apiKey: process.env.OPENAI_API_KEY,
+  model: 'gpt-4o-mini'
+});
+
+const testRunData = await csvProcessor.processCSV('test_results.csv');
+const analysis = await analytics.analyzeTestRun(testRunData);
+// Returns: AiAnalyticsResponse with anomalies and summary
+```
+
+**Output Structure**:
+```typescript
+{
+  executiveSummary: "Perfect success rate with 9.50 avg rating...",
+  assessment: "excellent" | "good" | "concerning" | "poor",
+  anomalies: {
+    hasAnomalies: boolean,
+    anomalies: Array<{
+      type: "statistical" | "criteria-inconsistency" | "temporal" | "outlier",
+      severity: "low" | "medium" | "high",
+      title: string,
+      description: string,
+      evidence: string[],
+      recommendation: string,
+      affectedTests: string[]
+    }>,
+    overallRisk: "low" | "medium" | "high",
+    confidence: number,
+    validationDetails: {
+      totalPotentialAnomalies: number,
+      validatedAnomalies: number,
+      rejectedAnomalies: number,
+      validationDecisions: Array<{
+        potentialAnomaly: string,
+        decision: "VALIDATED" | "REJECTED",
+        reason: string,
+        mathematicalCheck: string,
+        confidence: number
+      }>
+    }
+  },
+  insights: {
+    keyFindings: string[],
+    performanceHighlights: string[],
+    concerns: string[],
+    recommendations: string[]
+  }
+}
+```
+
+**Configuration**:
+- Detector Temperature: 0 (precise analysis)
+- Validator Temperature: 0 (strict validation)
+- Max Tokens: 1500 (comprehensive analysis)
+- Mathematical threshold: Any difference ≥0.2 validates as calculation error
+- Handoff architecture with OpenAI Agent SDK
+- Zod schema validation for all outputs
+
 ## Tools
 
 ### ChatGPT Tool
@@ -219,6 +315,9 @@ interface HistoryEnthusiastOptions extends BaseAgentOptions {
 - **Judge Output**: `JudgeResultSchema` - rating (1-10) and explanation (max 500 chars)
 - **Geography Questions**: `GeographyQuestionSchema` - question and rationale
 - **Geography Sequence**: `GeographySequenceSchema` - theme, 2 questions, completion status
+- **AI Analytics**: `AiAnalyticsResponseSchema` - executive summary, anomalies, and insights
+- **Anomaly Detection**: `AnomalyDetectionSchema` - anomaly validation with detailed logging
+- **Anomaly Handoff**: `AnomalyHandoffDataSchema` - simplified data transfer between agents
 - **Tool I/O**: Comprehensive input/output validation for all tools
 
 ### TypeScript Integration
@@ -233,6 +332,7 @@ interface HistoryEnthusiastOptions extends BaseAgentOptions {
 import { 
   LlmJudgeFactory, 
   HistoryEnthusiastAgent,
+  AiAnalyticsReport,
   BaseAgent 
 } from './agentic-system';
 
@@ -243,6 +343,11 @@ const evaluation = await judge.judgeRelevance(prompt, response);
 // Create enthusiast for generating test conversations
 const enthusiast = new HistoryEnthusiastAgent({ httpHandler });
 const sequence = await enthusiast.generateQuestionSequence();
+
+// Create analytics for comprehensive test analysis
+const analytics = new AiAnalyticsReport();
+const testData = await csvProcessor.processCSV('judge_results.csv');
+const analysis = await analytics.analyzeTestRun(testData);
 ```
 
 ### Logging Integration
@@ -260,10 +365,13 @@ const sequence = await enthusiast.generateQuestionSequence();
 ## Key Features
 
 - **Inheritance-based Design**: All agents extend BaseAgent for consistency
+- **Multi-Agent Orchestration**: Agent handoffs via OpenAI SDK for complex workflows
 - **Tool Sharing**: Common tools available across multiple agents
 - **External Configuration**: JSON-based prompts for easy versioning and A/B testing
 - **Type Safety**: Full TypeScript support with Zod validation
 - **Conversation Management**: Context-aware interactions with LLMs
+- **Intelligent Anomaly Detection**: Multi-agent validation system with mathematical verification
+- **Comprehensive Analytics**: Executive summaries, insights, and performance analysis
 - **Error Handling**: Graceful failure recovery and detailed error reporting
 - **Logging Integration**: Comprehensive tracking and analysis capabilities
 - **Modular Architecture**: Clean separation of concerns and reusable components
